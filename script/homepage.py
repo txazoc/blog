@@ -7,7 +7,7 @@ rootDir = os.getcwd() + '/docs'
 
 def buildHomepage():
     f = open(rootDir + '/homepage.md', 'w')
-    dirList = [''] * 12
+    dirList = [''] * 13
     dirs = os.listdir(rootDir)
     for dir in dirs:
         dirPath = rootDir + '/' + dir
