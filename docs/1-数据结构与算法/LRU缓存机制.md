@@ -8,3 +8,42 @@
 > 进阶:
 
 > 你是否可以在 `O(1)` 时间复杂度内完成这两种操作？
+
+```java
+public class LRUCache {
+
+    private final LinkedHashMap<Integer, Integer> cache;
+
+
+    public LRUCache(int capacity) {
+        cache = new LRULinkedHashMap<>(capacity);
+    }
+
+    public int get(int key) {
+        Integer value = cache.get(key);
+        return value != null ? value : -1;
+    }
+
+    public void put(int key, int value) {
+        cache.put(key, value);
+    }
+
+    private static class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> {
+
+        private static final long serialVersionUID = 8202653567905852980L;
+
+        private int capacity;
+
+        public LRULinkedHashMap(int initialCapacity) {
+            super(initialCapacity, 0.75F, true);
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() >= capacity;
+        }
+
+    }
+
+}
+```
