@@ -50,3 +50,25 @@ IO主要处理三个问题:
 * 默认: 遍历非transient的field
 
 #### 字符集&字符编码
+
+#### Linux IO模型
+
+* 阻塞IO
+
+<p style="text-align: center;"><img src="_media/java/blocking-io.jpg" alt="Hash" style="width: 50%"></p>
+
+* 非阻塞IO
+
+<p style="text-align: center;"><img src="_media/java/nonblocking-io.jpg" alt="Hash" style="width: 50%"></p>
+
+* IO多路复用
+
+<p style="text-align: center;"><img src="_media/java/multi-io.jpg" alt="Hash" style="width: 50%"></p>
+
+* 信号驱动IO
+
+<p style="text-align: center;"><img src="_media/java/signal-driven-io.jpg" alt="Hash" style="width: 50%"></p>
+
+* 异步IO
+
+<p style="text-align: center;"><img src="_media/java/async-io.jpg" alt="Hash" style="width: 50%"></p>
