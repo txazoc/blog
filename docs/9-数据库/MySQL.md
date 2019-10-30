@@ -39,6 +39,6 @@
 * `ALL`: 全表扫描，`最坏的情况`
 
 
-[上一篇 InnoDB](9-数据库/InnoDB.md)
+[<< 上一篇: InnoDB](9-数据库/InnoDB.md)
 
-[下一篇 MySQL锁](9-数据库/MySQL锁.md)
+[>> 下一篇: MySQL锁](9-数据库/MySQL锁.md)

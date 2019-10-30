@@ -90,6 +90,6 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess {
 ```
 
 
-[上一篇 Java数据结构](3-Java集合/Java数据结构.md)
+[<< 上一篇: Java数据结构](3-Java集合/Java数据结构.md)
 
-[下一篇 Map](3-Java集合/Map.md)
+[>> 下一篇: Map](3-Java集合/Map.md)

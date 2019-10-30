@@ -48,6 +48,6 @@ CAS自旋
 参考: [Synchronized解析](https://juejin.im/post/5d5374076fb9a06ac76da894)
 
 
-[上一篇 Java内存模型](4-多线程与并发/Java内存模型.md)
+[<< 上一篇: Java内存模型](4-多线程与并发/Java内存模型.md)
 
-[下一篇 volatile](4-多线程与并发/volatile.md)
+[>> 下一篇: volatile](4-多线程与并发/volatile.md)

@@ -49,6 +49,6 @@ public class LRUCache {
 ```
 
 
-[上一篇 fourSumCount](1-数据结构与算法/fourSumCount.md)
+[<< 上一篇: fourSumCount](1-数据结构与算法/fourSumCount.md)
 
-[下一篇 三数之和](1-数据结构与算法/三数之和.md)
+[>> 下一篇: 三数之和](1-数据结构与算法/三数之和.md)

@@ -66,6 +66,6 @@ public class ConcurrentLinkedQueue<E> {
 ```
 
 
-[上一篇 Map](3-Java集合/Map.md)
+[<< 上一篇: Map](3-Java集合/Map.md)
 
-[下一篇 Set](3-Java集合/Set.md)
+[>> 下一篇: Set](3-Java集合/Set.md)

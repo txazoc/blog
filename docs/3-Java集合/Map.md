@@ -183,6 +183,6 @@ public class ConcurrentSkipListMap<K, V> {
 ```
 
 
-[上一篇 List](3-Java集合/List.md)
+[<< 上一篇: List](3-Java集合/List.md)
 
-[下一篇 Queue](3-Java集合/Queue.md)
+[>> 下一篇: Queue](3-Java集合/Queue.md)

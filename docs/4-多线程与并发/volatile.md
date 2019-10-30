@@ -16,6 +16,6 @@ ACC_VOLATILE
 [https://segmentfault.com/a/1190000016074254](https://segmentfault.com/a/1190000016074254)
 
 
-[上一篇 synchronized](4-多线程与并发/synchronized.md)
+[<< 上一篇: synchronized](4-多线程与并发/synchronized.md)
 
-[下一篇 乐观锁vs悲观锁](4-多线程与并发/乐观锁vs悲观锁.md)
+[>> 下一篇: 乐观锁vs悲观锁](4-多线程与并发/乐观锁vs悲观锁.md)

@@ -23,6 +23,6 @@ public class HashSet {
 ```
 
 
-[上一篇 Queue](3-Java集合/Queue.md)
+[<< 上一篇: Queue](3-Java集合/Queue.md)
 
-[下一篇 优先级队列](3-Java集合/优先级队列.md)
+[>> 下一篇: 优先级队列](3-Java集合/优先级队列.md)

@@ -74,6 +74,6 @@ IO主要处理三个问题:
 <p style="text-align: center;"><img src="_media/java/async-io.jpg" alt="Hash" style="width: 50%"></p>
 
 
-[上一篇 最长回文子串](1-数据结构与算法/最长回文子串.md)
+[<< 上一篇: 最长回文子串](1-数据结构与算法/最长回文子串.md)
 
-[下一篇 Java-8](2-Java基础/Java-8.md)
+[>> 下一篇: Java-8](2-Java基础/Java-8.md)

@@ -11,6 +11,6 @@
 > 包装类型转换为基本数据类型
 
 
-[上一篇 Java基础](2-Java基础/Java基础.md)
+[<< 上一篇: Java基础](2-Java基础/Java基础.md)
 
-[下一篇 Lambda](2-Java基础/Lambda.md)
+[>> 下一篇: Lambda](2-Java基础/Lambda.md)

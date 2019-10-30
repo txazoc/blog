@@ -79,6 +79,6 @@ public E take() throws InterruptedException {
 #### ScheduledThreadPoolExecutor
 
 
-[上一篇 CompletableFuture](4-多线程与并发/CompletableFuture.md)
+[<< 上一篇: CompletableFuture](4-多线程与并发/CompletableFuture.md)
 
-[下一篇 final](4-多线程与并发/final.md)
+[>> 下一篇: final](4-多线程与并发/final.md)

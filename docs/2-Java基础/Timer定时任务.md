@@ -94,6 +94,6 @@ class TaskQueue {
         * task.run()
 
 
-[上一篇 SPI机制](2-Java基础/SPI机制.md)
+[<< 上一篇: SPI机制](2-Java基础/SPI机制.md)
 
-[下一篇 动态代理](2-Java基础/动态代理.md)
+[>> 下一篇: 动态代理](2-Java基础/动态代理.md)

@@ -196,6 +196,6 @@ public class LambdaGenarateTest {
     * 方法引用: 调用方法引用对应的方法
 
 
-[上一篇 Java语法糖](2-Java基础/Java语法糖.md)
+[<< 上一篇: Java语法糖](2-Java基础/Java语法糖.md)
 
-[下一篇 SPI机制](2-Java基础/SPI机制.md)
+[>> 下一篇: SPI机制](2-Java基础/SPI机制.md)

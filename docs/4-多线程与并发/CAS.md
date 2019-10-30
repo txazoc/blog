@@ -69,6 +69,6 @@ lock前缀的语义:
 #### LongAdder
 
 
-[上一篇 AQS](4-多线程与并发/AQS.md)
+[<< 上一篇: AQS](4-多线程与并发/AQS.md)
 
-[下一篇 CompletableFuture](4-多线程与并发/CompletableFuture.md)
+[>> 下一篇: CompletableFuture](4-多线程与并发/CompletableFuture.md)

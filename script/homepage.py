@@ -79,10 +79,10 @@ def copyAndRewrite(srcFile, destFile, prevMd, nextMd):
     writeLine(f, '')
     if prevMd != '':
         writeLine(f, '')
-        writeLine(f, '[上一篇 ' + prevMd.mdName + '](' + prevMd.module.fileName + '/' + prevMd.fileName + ')')
+        writeLine(f, '[<< 上一篇: ' + prevMd.mdName + '](' + prevMd.module.fileName + '/' + prevMd.fileName + ')')
     if nextMd != '':
         writeLine(f, '')
-        writeLine(f, '[下一篇 ' + nextMd.mdName + '](' + nextMd.module.fileName + '/' + nextMd.fileName + ')')
+        writeLine(f, '[>> 下一篇: ' + nextMd.mdName + '](' + nextMd.module.fileName + '/' + nextMd.fileName + ')')
 
 def writeLine(f, line):
     f.write(line + '\n')
