@@ -39,14 +39,12 @@ def buildHomepage():
         module.mds = [''] * len(mds)
         writeLine(f, '')
         for i, md in enumerate(mds):
-            print i
             if md.find('.') > -1:
                 pair = md.split('.', 1)
                 module.mds[i] = Md(module.srcPath + '/' + md, module.destPath + '/' + md, md, pair[0], module)
                 writeLine(f, '* ' + '[' + pair[0] + '](' + module.fileName + '/' + md + ')')
         writeLine(f, '')
 
-    # generate
     for moduleIndex, module in enumerate(modules):
         if not os.path.exists(module.destPath):
             os.mkdir(module.destPath)
