@@ -101,3 +101,8 @@ InnoDB的两种一致性读:
 * 一致性锁定读
     * `select ... lock in share mode`
     * `select ... for update`
+
+
+[上一篇 MySQL](9-数据库/MySQL.md)
+
+[下一篇 分库分表](9-数据库/分库分表.md)

@@ -23,3 +23,8 @@
 ### jhat-Java堆快照分析工具
 
 > Java Heap Analysis Tool
+
+
+[上一篇 JVM案例分析](6-JVM/JVM案例分析.md)
+
+[下一篇 类加载&对象初始化](6-JVM/类加载&对象初始化.md)

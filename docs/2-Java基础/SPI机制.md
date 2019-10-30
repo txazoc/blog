@@ -66,3 +66,8 @@ public static void main(String[] args) {
 * 遍历服务接口配置文件列表
     * 逐行读取
     * 实例化服务接口实现类并尝试转型为服务接口
+
+
+[上一篇 Lambda](2-Java基础/Lambda.md)
+
+[下一篇 Timer定时任务](2-Java基础/Timer定时任务.md)

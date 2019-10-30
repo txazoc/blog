@@ -81,3 +81,8 @@
 * https://blog.csdn.net/ustcyy91/article/details/76731659
 * https://mp.weixin.qq.com/s/uvYmmrfDuUfc4Z5SOblG3w
 * https://my.oschina.net/u/2663968/blog/3109540
+
+
+[上一篇 单例模式](5-设计模式/单例模式.md)
+
+[下一篇 JVM](6-JVM/JVM.md)

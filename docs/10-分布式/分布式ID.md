@@ -62,3 +62,8 @@ commit;
 ### 雪花算法变种
 
 > `时间戳`、`机房id`、`机器id`、`自增id`、`业务id`组合
+
+
+[上一篇 Zookeeper](10-分布式/Zookeeper.md)
+
+[下一篇 分布式Session](10-分布式/分布式Session.md)

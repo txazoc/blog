@@ -215,3 +215,8 @@ arrayOop {
 
 
 #### 参数
+
+
+[上一篇 GC](6-JVM/GC.md)
+
+[下一篇 JVM排错](6-JVM/JVM排错.md)

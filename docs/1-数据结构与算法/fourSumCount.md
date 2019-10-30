@@ -51,3 +51,6 @@ public class FourSumCount {
 [上一篇 IM消息系统](13-项目经验/IM消息系统.md)
 
 [下一篇 LRU缓存机制](13-项目经验/za.md)
+
+
+[下一篇 LRU缓存机制](1-数据结构与算法/LRU缓存机制.md)

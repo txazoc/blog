@@ -55,3 +55,8 @@
 * [一套简洁的即时通信(IM)系统](https://kb.cnblogs.com/page/541190/)
 * [Netty 入门与实战：仿写微信 IM 即时通讯系统](https://juejin.im/book/5b4bc28bf265da0f60130116)
 * [即时通讯网](http://www.52im.net/)
+
+
+[上一篇 高可用](12-架构/高可用.md)
+
+[下一篇 za](13-项目经验/za.md)

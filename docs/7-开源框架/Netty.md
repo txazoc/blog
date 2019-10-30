@@ -193,3 +193,8 @@ public class NioEventLoop {
 * client: 动态代理、Future模式
 * Netty Handler链: 协议、编码解码、序列化/反序列化
 * server: 反射
+
+
+[上一篇 MyBatis](7-开源框架/MyBatis.md)
+
+[下一篇 Spring-Security](7-开源框架/Spring-Security.md)

@@ -32,3 +32,8 @@ update table set ..., version = version + 1 where version = ?
 * insert、update、delete
 
 #### synchronized & ReentrantLock
+
+
+[上一篇 volatile](4-多线程与并发/volatile.md)
+
+[下一篇 同步队列&等待队列](4-多线程与并发/同步队列&等待队列.md)

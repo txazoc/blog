@@ -244,3 +244,8 @@ public class CyclicBarrier {
 ### Condition
 
 ### ReentrantReadWriteLock
+
+
+[上一篇 优先级队列](3-Java集合/优先级队列.md)
+
+[下一篇 CAS](4-多线程与并发/CAS.md)

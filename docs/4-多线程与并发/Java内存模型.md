@@ -78,3 +78,8 @@ volatile重排序规则:
 * 任何形式的volatile读和volatile写都不能重排序
 * 普通读/写和volatile写不能重排序
 * volatile读和普通读/写不能重排序
+
+
+[上一篇 final](4-多线程与并发/final.md)
+
+[下一篇 synchronized](4-多线程与并发/synchronized.md)

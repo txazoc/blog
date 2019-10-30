@@ -13,3 +13,8 @@
 * 客户端缓存槽和节点的映射
 * node重定向
 * 不支持mget不同的node，解决方案{prefix}.suffix
+
+
+[上一篇 ElasticSearch](11-中间件/ElasticSearch.md)
+
+[下一篇 消息队列](11-中间件/消息队列.md)

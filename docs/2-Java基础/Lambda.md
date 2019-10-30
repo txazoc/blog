@@ -194,3 +194,8 @@ public class LambdaGenarateTest {
 * 调用匿名内部类对象的函数式接口方法
     * Lambda表达式: 调用Lambda表达式转换后的内部方法
     * 方法引用: 调用方法引用对应的方法
+
+
+[上一篇 Java语法糖](2-Java基础/Java语法糖.md)
+
+[下一篇 SPI机制](2-Java基础/SPI机制.md)

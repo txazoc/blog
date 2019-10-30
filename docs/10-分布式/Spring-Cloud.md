@@ -154,3 +154,8 @@ HystrixCircuitBreaker.allowRequest():
 #### 降级
 
 * `fallback`
+
+
+[上一篇 CAP](10-分布式/CAP.md)
+
+[下一篇 Zookeeper](10-分布式/Zookeeper.md)

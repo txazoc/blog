@@ -90,3 +90,8 @@ redo日志刷盘时机:
 * 后台线程刷，1s刷一次
 
 `innodb_flush_log_at_trx_commit`
+
+
+[上一篇 TCP](8-网络通信/TCP.md)
+
+[下一篇 MySQL](9-数据库/MySQL.md)

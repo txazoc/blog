@@ -92,3 +92,8 @@ class TaskQueue {
         * period == 0，从队列中删除task
         * period != 0，重新计算并设置task的nextExecutionTime，然后执行下沉
         * task.run()
+
+
+[上一篇 SPI机制](2-Java基础/SPI机制.md)
+
+[下一篇 动态代理](2-Java基础/动态代理.md)
