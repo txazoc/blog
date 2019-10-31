@@ -2,9 +2,11 @@
 # -*- coding:utf-8 -*-
 
 import os
+import sys
 
 sourceDir = os.getcwd() + '/_docs'
 destDir = os.getcwd() + '/docs'
+encoding = sys.getfilesystemencoding()
 
 class Module:
     def __init__(self, srcPath, destPath, fileName, moduleName):
@@ -34,7 +36,7 @@ def buildHomepage():
                 modules[int(pair[0]) - 1] = Module(srcPath, destPath, dir, pair[1])
 
     for index, module in enumerate(modules):
-        writeLine(f, '#### ' + str(index + 1) + '. ' + module.moduleName)
+        writeLine(f, '#### ' + str(index + 1) + '. ' + encode(module.moduleName))
         mds = os.listdir(module.srcPath)
         module.mds = [''] * len(mds)
         writeLine(f, '')
@@ -42,7 +44,7 @@ def buildHomepage():
             if md.find('.') > -1:
                 pair = md.split('.', 1)
                 module.mds[i] = Md(module.srcPath + '/' + md, module.destPath + '/' + md, md, pair[0], module)
-                writeLine(f, '* ' + '[' + pair[0] + '](' + module.fileName + '/' + md + ')')
+                writeLine(f, '* ' + '[' + encode(pair[0]) + '](' + encode(module.fileName) + '/' + encode(md) + ')')
         writeLine(f, '')
 
     for moduleIndex, module in enumerate(modules):
@@ -79,13 +81,16 @@ def copyAndRewrite(srcFile, destFile, prevMd, nextMd):
     writeLine(f, '')
     if prevMd != '':
         writeLine(f, '')
-        writeLine(f, '[<< 上一篇: ' + prevMd.mdName + '](' + prevMd.module.fileName + '/' + prevMd.fileName + ')')
+        writeLine(f, '[<< 上一篇: ' + encode(prevMd.mdName) + '](' + encode(prevMd.module.fileName) + '/' + encode(prevMd.fileName) + ')')
     if nextMd != '':
         writeLine(f, '')
-        writeLine(f, '[>> 下一篇: ' + nextMd.mdName + '](' + nextMd.module.fileName + '/' + nextMd.fileName + ')')
+        writeLine(f, '[>> 下一篇: ' + encode(nextMd.mdName) + '](' + encode(nextMd.module.fileName) + '/' + encode(nextMd.fileName) + ')')
 
 def writeLine(f, line):
     f.write(line + '\n')
+
+def encode(str):
+    return str.decode(encoding).encode('utf-8')
 
 def main():
     print '--------------------------------------------------'
