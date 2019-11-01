@@ -7,13 +7,14 @@ import sys
 configFile = os.getcwd() + '/docs/_coverpage.md'
 
 def replace(localDebug):
+    print localDebug
     f = open(configFile, 'r')
     lines = f.readlines()
     f.close()
 
     f = open(configFile, 'w')
     for line in lines:
-        if line.find('[开始阅读]') > -1:
+        if line.find('开始阅读') > -1:
             if localDebug == 'false':
                 f.write('<a href="http://www.txazo.com/blog/#/homepage">开始阅读</a>)')
             else:
