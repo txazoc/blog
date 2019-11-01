@@ -7,7 +7,6 @@ import sys
 configFile = os.getcwd() + '/docs/_coverpage.md'
 
 def replace(localDebug):
-    print localDebug
     f = open(configFile, 'r')
     lines = f.readlines()
     f.close()
