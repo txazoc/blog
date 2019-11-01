@@ -16,7 +16,7 @@ def replace(localDebug):
     for line in lines:
         if line.find('开始阅读') > -1:
             if localDebug == 'false':
-                f.write('<a href="http://www.txazo.com/blog/#/homepage">开始阅读</a>)')
+                f.write('<a href="http://www.txazo.com/blog/#/homepage">开始阅读</a>')
             else:
                 f.write('<a href="http://localhost:3000/#/homepage">开始阅读</a>')
         else:
