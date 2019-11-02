@@ -23,8 +23,8 @@ class Md:
         self.mdName = mdName
         self.module = module
 
-def buildHomepage():
-    f = open(destDir + '/homepage.md', 'w')
+def buildHomepage(localDebug):
+    f = open((sourceDir if localDebug == 'true' else destDir) + '/homepage.md', 'w')
     modules = [''] * 13
     dirs = os.listdir(sourceDir)
     for dir in dirs:
@@ -46,6 +46,9 @@ def buildHomepage():
                 module.mds[i] = Md(module.srcPath + '/' + md, module.destPath + '/' + md, md, pair[0], module)
                 writeLine(f, '* ' + '[' + encode(pair[0]) + '](' + encode(module.fileName) + '/' + encode(md) + ')')
         writeLine(f, '')
+
+    if localDebug == 'true':
+        return
 
     for moduleIndex, module in enumerate(modules):
         if not os.path.exists(module.destPath):
@@ -81,10 +84,12 @@ def copyAndRewrite(srcFile, destFile, prevMd, nextMd):
     writeLine(f, '')
     if prevMd != '':
         writeLine(f, '')
-        writeLine(f, '[<< 上一篇: ' + encode(prevMd.mdName) + '](' + encode(prevMd.module.fileName) + '/' + encode(prevMd.fileName) + ')')
+        writeLine(f, '[<< 上一篇: ' + encode(prevMd.mdName) + '](' + encode(prevMd.module.fileName) + '/' + encode(
+                prevMd.fileName) + ')')
     if nextMd != '':
         writeLine(f, '')
-        writeLine(f, '[>> 下一篇: ' + encode(nextMd.mdName) + '](' + encode(nextMd.module.fileName) + '/' + encode(nextMd.fileName) + ')')
+        writeLine(f, '[>> 下一篇: ' + encode(nextMd.mdName) + '](' + encode(nextMd.module.fileName) + '/' + encode(
+                nextMd.fileName) + ')')
 
 def writeLine(f, line):
     f.write(line + '\n')
@@ -92,11 +97,15 @@ def writeLine(f, line):
 def encode(str):
     return str.decode(encoding).encode('utf-8')
 
-def main():
+def main(localDebug):
     print '--------------------------------------------------'
     print '[python] build homepage begin.'
-    buildHomepage()
+    buildHomepage(localDebug)
     print '[python] build homepage end.'
     print '--------------------------------------------------'
 
-main()
+if __name__ == '__main__':
+    localDebug = 'false'
+    if len(sys.argv) > 1 and sys.argv[1] == 'true':
+        localDebug = 'true'
+    main(localDebug)
