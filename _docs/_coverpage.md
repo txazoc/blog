@@ -1,4 +1,4 @@
-![logo](_media/icon.svg)
+![logo](_media/fox.svg)
 
 ## 我的博客
 
