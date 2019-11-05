@@ -17,10 +17,6 @@
 
 * [https://github.com/sayhiai/javaok](https://github.com/sayhiai/javaok)
 
-* [技术思路](参考资料/技术思路.md)
-* [简书](参考资料/简书.md)
-* [Java大纲](参考资料/Java大纲.md)
-* [百万大纲](参考资料/百万大纲.md)
 * [Java 学习/面试指南](https://github.com/Snailclimb/JavaGuide)
 * [互联网 Java 工程师进阶知识完全扫盲](https://github.com/doocs/advanced-java)
 * [Interviews](https://github.com/kdn251/interviews/blob/master/README-zh-cn.md)
@@ -39,5 +35,3 @@
 * [面试被问：如果系统 CPU 突然飙升且 GC 频繁，你该如何排查？](https://zhuanlan.zhihu.com/p/84203026)
 * [关于GC原理和性能调优，看这一篇就够了! ](https://mp.weixin.qq.com/s/uvYmmrfDuUfc4Z5SOblG3w)
 * [知乎技术分享：知乎千万级并发的高性能长连接网关技术实践](http://www.52im.net/forum.php?mod=viewthread&tid=2737&highlight=%D6%AA%BA%F5%C7%A7%CD%F2%BC%B6%B2%A2%B7%A2%B5%C4%B8%DF%D0%D4%C4%DC)
-
-* [XMind中文破解版](http://www.carrotchou.blog/20331.html?from=timeline)
