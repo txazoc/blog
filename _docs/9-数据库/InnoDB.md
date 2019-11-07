@@ -1,10 +1,35 @@
-## InnoDB
+### InnoDB
 
-### ACID
+#### InnoDB行格式
+
+InnoDB有四种行格式:
+
+* Compact
+* Redundant
+* Dynamic
+* Compressed
+
+##### Compact行格式
+
+![Compact行格式](_media/datastructure/hash.png)
+
+* 变长字段长度列表
+
+* NULL值列表
+
+* 记录头信息
+
+* 列数据
+
+#### InnoDB数据页
+
+InnoDB中页的大小为`16k`
+
+#### ACID
 
 > ACID是数据库事务的四个特性
 
-### 事务隔离级别
+#### 事务隔离级别
 
 * A: 原子性，Atomicity，一个事务中的所有操作，要么全部执行，要么全部不执行，不会停留在某个中间状态，允许回滚
     * commit: redo log
@@ -35,7 +60,7 @@
 * `Serializable`: 串行化
     * `select`加共享锁: 解决所有并发问题
 
-### InnoDB事务实现
+#### InnoDB事务实现
 
 * redo log: 重做日志，顺序记录数据变更的操作
 * undo log: 撤销日志，记录数据变更的反向操作
@@ -73,11 +98,11 @@ commit;
 9. 提交事务
 ```
 
-### redo log重做日志
+#### redo log重做日志
 
-#### redo日志格式
+##### redo日志格式
 
-#### redo日志缓冲区
+##### redo日志缓冲区
 
 > redo log buffer
 

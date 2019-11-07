@@ -166,8 +166,11 @@ MySQL支持的字符集:
 ```
 
 > `注:`
+>
 > 列未指定字符集和比较规则，则使用所在表的字符集和比较规则
+>
 > 表未指定字符集和比较规则，则使用所在库的字符集和比较规则
+>
 > 库未指定字符集和比较规则，则使用服务器的字符集和比较规则
 
 ##### 客户端和MySQL服务器通信中的字符集
@@ -189,12 +192,13 @@ MySQL支持的字符集:
 
 MySQL中字符集的转换过程:
 
-* characterEncoding(jdbc)
-* character_set_client  -&gt;  character_set_connection
-* character_set_connection  -&gt;  列字符集
-* 列字符集  -&gt;  character_set_results
+* `character_set_client`解码  -&gt;  `character_set_connection`编码
+* `character_set_connection`解码  -&gt;  `列字符集`编码
+* `列字符集`解码  -&gt;  `character_set_results`编码
 
-> 通常都把character_set_client、character_set_connection、character_set_results设置成和客户端使用的字符集一致，减少无谓的字符集转换和乱码问题
+> 通常都把character_set_client、character_set_connection、character_set_results设置成和客户端使用的字符集一致，减少无谓的字符集转换
+
+> jdbc中characterEncoding必须和character_set_client、character_set_results保持一致，否则会发生乱码
 
 #### 存储引擎
 
