@@ -1,6 +1,44 @@
-## MySQL
+### MySQL
 
-### 服务器处理客户端请求
+#### MySQL连接
+
+##### 查看当前连接
+
+```sql
+> show processlist;
+> show full processlist;
+> select id, user, host, db, command, time, state, info from information_schema.processlist where command != 'Sleep' order by time desc;
+```
+
+**Command:** Sleep、Query、Binlog Dump
+
+##### 查看最大连接数
+
+```sql
+> show variables like '%max_connections%';
++-----------------+-------+
+| Variable_name   | Value |
++-----------------+-------+
+| max_connections | 1024  |
++-----------------+-------+
+```
+
+```sql
+> show status like 'Threads%';
++-------------------+-------+
+| Variable_name     | Value |
++-------------------+-------+
+| Threads_cached    | 76    |
+| Threads_connected | 143   |
+| Threads_created   | 219   |
+| Threads_running   | 3     |
++-------------------+-------+
+```
+
+* Threads_connected: 当前打开的连接数
+* Threads_running: 当前未挂起的连接数
+
+#### 服务器处理客户端请求
 
 * 连接管理: 一个连接对应一个线程(限制客户端连接数量)
 * 解析与优化
@@ -9,7 +47,7 @@
     * 查询优化: 生成执行计划
 * 存储引擎: 读写
 
-### 执行计划explain
+#### 执行计划explain
 
 #### explain
 
@@ -26,7 +64,7 @@
 
 关心字段: `type`、`key`、`key_len`、`rows`、`Extra`
 
-#### type
+##### type
 
 * `system`: 表仅有一行，`const`的特例
 * `const`: 单表`primary_key`或`unique_key`查询，最多匹配一行，操作符`=`
