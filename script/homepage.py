@@ -119,7 +119,7 @@ def copyAndRewrite(srcFile, destFile, prevMd, nextMd):
 def rewriteMdImage(f, match):
     uri = match.group(2)
     if uri.find('_media') > -1:
-        uri = uri[uri.find('_media'):-1]
+        uri = uri[uri.find('_media'):]
     f.write('<p style="text-align: center;"><img src="' + uri + '" alt="' + match.group(1) + '" style="width: ' + match.group(3) + '"></p>\n')
 
 def writeLine(f, line):
