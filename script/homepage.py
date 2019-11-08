@@ -3,10 +3,12 @@
 
 import os
 import sys
+import re
 
 sourceDir = os.getcwd() + '/_docs'
 destDir = os.getcwd() + '/docs'
 encoding = sys.getfilesystemencoding()
+regex_image = '!\[(.*)\]\((.*)\)\((.*)\)'
 
 class Module:
     def __init__(self, srcPath, destPath, fileName, moduleName):
@@ -79,7 +81,11 @@ def getNextMd(moduleIndex, mdIndex, mds, modules):
 def copyAndRewrite(srcFile, destFile, prevMd, nextMd):
     f = open(destFile, 'w')
     for line in open(srcFile, 'r'):
-        f.write(line)
+        match = re.match(regex_image, line)
+        if match:
+            rewriteMdImage(f, match)
+        else:
+            f.write(line)
 
     writeLine(f, '')
     if prevMd != '':
@@ -90,6 +96,12 @@ def copyAndRewrite(srcFile, destFile, prevMd, nextMd):
         writeLine(f, '')
         writeLine(f, '[>> 下一篇: ' + encode(nextMd.mdName) + '](' + encode(nextMd.module.fileName) + '/' + encode(
                 nextMd.fileName) + ')')
+
+def rewriteMdImage(f, match):
+    uri = match.group(2)
+    if uri.find('_media') > -1:
+        uri = uri[uri.find('_media'):-1]
+    f.write('<p style="text-align: center;"><img src="' + uri + '" alt="' + match.group(1) + '" style="width: ' + match.group(3) + '"></p>\n')
 
 def writeLine(f, line):
     f.write(line + '\n')

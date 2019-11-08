@@ -23,7 +23,7 @@
 ##### 查看当前连接
 
 ```sql
-> show processlist;
+> show [full] processlist;
 +----+------+-----------------+------+---------+------+----------+------------------+
 | Id | User | Host            | db   | Command | Time | State    | Info             |
 +----+------+-----------------+------+---------+------+----------+------------------+
@@ -31,16 +31,39 @@
 +----+------+-----------------+------+---------+------+----------+------------------+
 ```
 
+* Id: 线程id，可以通过`kill ${id}`来杀死该线程
+* User: 用户名
+* Host: 客户端ip和端口号
+* db: 数据库
+* Command: 命令
+* Time: 线程处于当前状态的时间
+* State: 线程的状态
+* Info: sql语句
+
+**Command:**
+
+* Binlog Dump: 主从同步
+* Query: 查询
+* Sleep: 空闲
+
+筛选出正在执行的线程，按time倒排序:
+
 ```sql
-> show full processlist;
-> select id, user, host, db, command, time, state, info
-  from information_schema.processlist
+> select * from information_schema.processlist
   where command != 'Sleep' order by time desc;
 ```
 
-**Command:** Sleep、Query、Binlog Dump
+连接按客户端ip分组:
 
-##### 查看最大连接数
+```sql
+> select client_ip, count(client_ip) as client_num
+  from (select substring_index(host, ':', 1) as client_ip from information_schema.processlist) as connect_info
+  group by client_ip order by client_num desc;
+```
+
+##### 查看连接数
+
+**查看最大连接数**
 
 ```sql
 > show variables like 'max_connections';
@@ -50,6 +73,8 @@
 | max_connections | 1024  |
 +-----------------+-------+
 ```
+
+**查看当前连接数**
 
 ```sql
 > show status like 'Threads%';
@@ -63,7 +88,7 @@
 +-------------------+-------+
 ```
 
-* Threads_connected: 当前打开的连接数
+* Threads_connected: 当前打开的连接数，和`show full processlist`返回的连接数一致
 * Threads_running: 当前未挂起的连接数
 
 ##### MySQL处理客户端请求

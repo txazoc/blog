@@ -11,7 +11,7 @@ InnoDB有四种行格式:
 
 ##### Compact行格式
 
-![Compact行格式](_media/datastructure/hash.png)
+![Compact行格式](../_media/db/innodb_compact.png)(80%)
 
 * 变长字段长度列表
 
