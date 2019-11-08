@@ -38,8 +38,8 @@ InnoDB有四种行格式:
 > 存放变长字段的长度，变长字段包括varchar、text、blob，逆序存放，只存放`非NULL`的列的长度
 
 ```console
-04 03 02    // id=1
-02 01       // id=2
+04 03 02    // id=1(c4、c3、c2)
+02 01       // id=2(c3、c2)
 ```
 
 > `注:`
@@ -70,6 +70,8 @@ record_compact表有三个允许为NULL的列，c1、c2、c4
 * DB_ROW_ID: 行id，主键id
 * DB_TRX_ID: 事务id
 * DB_ROLL_PTR: 回滚指针
+
+**表中定义的列:**
 
 ```console
 // id=1
@@ -108,9 +110,9 @@ This includes storage overhead, check the manual. You have to change some column
     c varchar(65533) not null
 ) engine=InnoDB charset=ascii row_format=compact;
 
-# 变长字段长度列表2字节 + 真实数据65532字节(21844 * 2) = 65535
+# 变长字段长度列表2字节 + 真实数据65532字节(21844 * 2) = 65534
 > create table varchar_size_test_4(
-      c varchar(21844)
+      c varchar(21844) not null
   ) engine=InnoDB charset=utf8 row_format=compact;
 ```
 
@@ -127,6 +129,18 @@ This includes storage overhead, check the manual. You have to change some column
 #### InnoDB数据页
 
 InnoDB中页的大小为`16k`
+
+**数据页组成:**
+
+* File Header: 文件头
+* Page Header: 页头
+* Infimum + Supremum: 最小记录和最大记录
+* User Records: 用户记录
+* Free Space: 空闲空间
+* Page Directory: 页目录
+* File Trailer: 文件尾
+
+##### 用户记录(User Records)
 
 #### ACID
 
