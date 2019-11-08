@@ -4,6 +4,7 @@
 import os
 import sys
 import re
+import shutil
 
 sourceDir = os.getcwd() + '/_docs'
 destDir = os.getcwd() + '/docs'
@@ -59,6 +60,24 @@ def buildHomepage(localDebug):
             prevMd = getPrevMd(moduleIndex, mdIndex, module.mds, modules)
             nextMd = getNextMd(moduleIndex, mdIndex, module.mds, modules)
             copyAndRewrite(md.srcPath, md.destPath, prevMd, nextMd)
+
+    print '[python] copy media begin.'
+    copyMedia(sourceDir + '/_media', destDir + '/_media')
+    print '[python] copy media begin.'
+
+def copyMedia(sourcePath, destPath):
+    childs = os.listdir(sourcePath)
+    for child in childs:
+        childPath = sourcePath + '/' +child
+        if os.path.isdir(childPath):
+            copyMedia(childPath, destPath + '/' +child)
+        else:
+            copyMediaImage(sourcePath, destPath, child)
+
+def copyMediaImage(sourcePath, destPath, image):
+    if not os.path.exists(destPath):
+        os.mkdir(destPath)
+    shutil.copy(sourcePath + '/' + image, destPath + '/' + image)
 
 def getPrevMd(moduleIndex, mdIndex, mds, modules):
     if moduleIndex == 0 and mdIndex == 0:
