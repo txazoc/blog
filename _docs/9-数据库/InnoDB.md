@@ -142,6 +142,41 @@ InnoDB中页的大小为`16k`
 
 ##### 用户记录(User Records)
 
+* 最小记录: Infimum记录
+* 最大记录: Supremum记录
+* 真实数据记录: 记录之间通过`next_record`按照主键从小到大组成一个单向链表
+
+![用户记录](../_media/db/user_record.png)(80%)
+
+* insert
+* 删除记录: 记录的`delete_mask`设为1，上一条记录的`next_record`指向下一条记录
+
+##### 页目录(Page Directory)
+
+* 槽(Slot)，分组
+    * `n_owned`: 分组内的记录数
+* 主键查找
+    * 二分法查找定位槽
+    * 通过`next_record`遍历槽对应分组中的记录
+
+> `注`: InnoDB规定，对于最小记录所在的分组只能有`1`条记录，最大记录所在的分组拥有的记录条数只能在`1~8`条之间，剩下的分组中记录的条数范围只能在是`4~8`条之间
+
+![页目录](../_media/db/page_directory.png)(80%)
+
+##### 文件头部(File Header)
+
+页之间通过上一页`FIL_PAGE_PREV`和下一页`FIL_PAGE_NEXT`组成一个双向链表
+
+![文件头部](../_media/db/file_header.png)(80%)
+
+![文件头部](../_media/db/file_header_2.png)(80%)
+
+#### 索引
+
+![用户记录](../_media/db/user_record_2.png)(80%)
+
+![用户记录](../_media/db/user_record_3.png)(80%)
+
 #### ACID
 
 > ACID是数据库事务的四个特性
