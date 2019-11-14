@@ -212,9 +212,92 @@ InnoDB中页的大小为`16k`
 >
 > 联合索引的叶子节点存储的是`多个列 + 主键`的值
 
+##### 前缀索引
+
+> 使用列的前缀代替整个列作为前缀
+
+```sql
+alter table table_name add index `name` (name(8));
+```
+
 ##### 索引查找
 
-* 全值匹配
+* **全列匹配:** where子句中的列和索引列一致，例如，联合索引(index_field_1, index_field_2, index_field_3)
+
+```sql
+select * from table_name where index_field_1 = 'value1' and index_field_2 = 'value2' and index_field_3 = 'value3'
+```
+
+* **最左匹配:** where子句中的列只包含联合索引左边的列，例如，联合索引(index_field_1, index_field_2, index_field_3)
+
+```sql
+select * from table_name where index_field_1 = 'value1' and index_field_2 = 'value2'
+```
+
+* **列前缀匹配:** 字符串前缀模糊匹配
+
+```sql
+select * from table_name where name like 'as%';
+```
+
+* **范围匹配:** 索引列的值在某个范围内
+
+```sql
+select * from table_name where id > 1000 and id < 10000;
+```
+
+> `注:` 对联合索引中的多个列进行范围查找时，只有联合索引最左边范围查找的列可以用到索引
+
+```sql
+select * from table_name where index_field_1 = 'range1' > and index_field_1 < 'range2';
+select * from table_name where index_field_1 = 'value1' and index_field_2 = 'range1' > and index_field_2 < 'range2';
+```
+
+##### 索引排序
+
+> 利用索引列的有序性进行排序，避免内存或磁盘上的文件排序`filesort`
+
+```sql
+select * from table_name order by index_field_1 limit 10;
+select * from table_name order by index_field_1, index_field_2 limit 10;
+select * from table_name where index_field_1 = 'value1' order by index_field_2, index_field_3 limit 10;
+```
+
+不能使用索引进行排序的情况:
+
+* `ASC`、`DESC`混用时
+
+```sql
+select * from table_name order by index_field_1 asc, index_field_2 desc limit 10;
+```
+
+* where子句中出现非排序使用到的索引列
+
+```sql
+select * from table_name where field_other = 'value' order by index_field_1 limit 10;
+```
+
+* 排序列包含非同一个索引的列
+
+```sql
+select * from table_name order by index_field_1, field_other limit 10;
+```
+
+* 排序列使用了复杂的表达式
+
+```sql
+select * from table_name order by upper(index_field_1) limit 10;
+```
+
+##### 索引分组
+
+> 同`索引排序`，索引也可以用来分组
+
+```sql
+select index_field_1, index_field_2, count(1) from table_name group by index_field_1, index_field_2;
+```
+
+##### 回表
 
 #### ACID
 
