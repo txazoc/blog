@@ -225,6 +225,42 @@ MySQL中字符集的转换过程:
 
 > jdbc中characterEncoding必须和character_set_client、character_set_results保持一致，否则会发生乱码
 
+#### 数据目录
+
+查看MySQL的数据目录位置:
+
+```sql
+> show variables like 'datadir';
++---------------+--------------------------------------------------+
+| Variable_name | Value                                            |
++---------------+--------------------------------------------------+
+| datadir       | C:\Program Files\MySQL\mysql-5.7.26-winx64\data\ |
++---------------+--------------------------------------------------+
+```
+
+```sql
+> create database test charset=utf8 collate=utf8_bin;
+```
+
+创建好数据库后，MySQL会在`datadir`目录下创建和数据库同名的子目录，同时在该子目录下创建名为`db.opt`的文件，存储该数据库的各种属性
+
+`db.opt`
+
+```console
+default-character-set=utf8
+default-collation=utf8_bin
+```
+
+数据库目录下的文件:
+
+```console
+table_innodb.frm        // 表结构元数据
+table_innodb.ibd        // Innodb数据和索引文件
+table_myisam.frm        // 表结构元数据
+table_myisam.MYD        // MyISAM数据文件
+table_myisam.MYI        // MyISAM索引文件
+```
+
 #### 存储引擎
 
 #### 执行计划explain
