@@ -254,18 +254,34 @@ default-collation=utf8_bin
 数据库目录下的文件:
 
 ```console
-table_innodb.frm        // 表结构元数据
+table_innodb.frm        // Innodb表结构元数据
 table_innodb.ibd        // Innodb数据和索引文件
-table_myisam.frm        // 表结构元数据
+table_myisam.frm        // MyISAM表结构元数据
 table_myisam.MYD        // MyISAM数据文件
 table_myisam.MYI        // MyISAM索引文件
 ```
 
-#### 存储引擎
+#### 表空间
+
+> 表空间被划分为许多连续的区，每个区(1M)默认由64个页(16k)组成，每256个区划分为一组(256M)，每个组的最开始的几个页面类型是固定的
+
+为方便范围查询，InnoDB作了如下设计:
+
+* 一个区就是在物理位置上连续的64个页，在表中数据量大的时候，为某个索引分配空间的时候就不再按照页为单位分配了，而是按照区为单位分配
+* 叶子节点和非叶子节点都有自己独立的区
 
 #### 执行计划explain
 
-#### explain
+```sql
+> explain select * from app_bac_activity where id = 12;
++----+-------------+------------------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+| id | select_type | table            | partitions | type  | possible_keys | key     | key_len | ref   | rows | filtered | Extra |
++----+-------------+------------------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+|  1 | SIMPLE      | app_bac_activity | NULL       | const | PRIMARY       | PRIMARY | 4       | const |    1 |   100.00 | NULL  |
++----+-------------+------------------+------------+-------+---------------+---------+---------+-------+------+----------+-------+
+```
+
+##### explain
 
 * `id`：select查询的序列号
 * `select_type`：select查询的类型
@@ -280,14 +296,48 @@ table_myisam.MYI        // MyISAM索引文件
 
 关心字段: `type`、`key`、`key_len`、`rows`、`Extra`
 
-##### type
+##### const
 
-* `system`: 表仅有一行，`const`的特例
-* `const`: 单表`primary_key`或`unique_key`查询，最多匹配一行，操作符`=`
-* `eq_ref`: 多表`primary_key`或`unique_key`关联查询，最多匹配一行，操作符`=`，`最好的关联类型`
-* `ref`: 单表索引查询或多表索引关联查询，操作符`=`
-* `ref_null`: 在`ref`的基础上对NULL值做额外搜索
-* `index_merge`: 多个索引查询合并，操作符`OR`、`AND`
-* `range`: 单表索引范围查询，操作符`>`、`>=`、`<`、`<=`、`IN()`、`BETWEEN()`
-* `index`: 全表扫描索引树
-* `ALL`: 全表扫描，`最坏的情况`
+> 通过主键`primary_key`或唯一键`unique_key`来定位一条记录，如果是联合索引，需要每个列都是等值查询
+
+* 主键: 聚簇索引 -&gt; 完整的用户记录
+* 唯一键: 二级索引 -&gt; 唯一主键id -&gt; 聚簇索引 -&gt; 完整的用户记录
+
+![const](../_media/db/const.png)(80%)
+
+##### ref
+
+> 非唯一二级索引与常数的等值查询
+
+* 非唯一二级索引: 二级索引 -&gt; 多个主键id -&gt; 聚簇索引 -&gt; 完整的用户记录
+
+![const](../_media/db/ref.png)(80%)
+
+##### ref_or_null
+
+> 在`ref`的基础上对NULL值做额外查询
+
+![const](../_media/db/ref_or_null.png)(80%)
+
+##### index_merge
+
+> 多个索引查询结果合并，操作符`OR`、`AND`
+
+##### range
+
+> 索引的范围查询，操作符`>`、`>=`、`<`、`<=`、`IN()`、`BETWEEN()`
+
+##### index
+
+> 全表扫描索引树
+
+##### ALL
+
+> 全表扫描，`最坏的情况`
+
+总结下，查询分为四大类:
+
+* 针对主键或唯一二级索引的等值查询
+* 针对普通二级索引的等值查询
+* 针对索引列的范围查询
+* 直接扫描整个索引
