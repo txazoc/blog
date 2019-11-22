@@ -37,3 +37,7 @@
 * [知乎技术分享：知乎千万级并发的高性能长连接网关技术实践](http://www.52im.net/forum.php?mod=viewthread&tid=2737&highlight=%D6%AA%BA%F5%C7%A7%CD%F2%BC%B6%B2%A2%B7%A2%B5%C4%B8%DF%D0%D4%C4%DC)
 
 https://www.zhihu.com/question/31215862/answer/733862803
+
+#### todo
+
+* https://mp.weixin.qq.com/s/NxMMu-AS4c1X0ofaUDghTQ
