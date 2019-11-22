@@ -62,8 +62,50 @@ lock前缀的语义:
 
 `java.util.concurrent.atomic`包下提供一系列的原子操作类
 
+* 实现原理: volatile + CAS
 * AtomicBoolean: 原子操作布尔类型
 * AtomicInteger: 原子操作int类型
 * AtomicLong: 原子操作long类型
+
+**AtomicInteger:**
+
+```java
+public class AtomicInteger extends Number implements Serializable {
+
+    // Unsafe
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    
+    // value字段的偏移
+    private static final long valueOffset;
+
+    static {
+        valueOffset = unsafe.objectFieldOffset(AtomicInteger.class.getDeclaredField("value"));
+    }
+
+    // 值, volatile
+    private volatile int value;
+
+    /**
+     * 自增1
+     */
+    public final int getAndIncrement() {
+        return unsafe.getAndAddInt(this, valueOffset, 1);
+    }
+
+}
+```
+
+**Unsafe:**
+
+```java
+public final int getAndAddInt(Object o, long offset, int delta) {
+    int v;
+    // 自旋CAS
+    do {
+        v = getIntVolatile(o, offset);
+    } while (!compareAndSwapInt(o, offset, v, v + delta));
+    return v;
+}
+```
 
 #### LongAdder
