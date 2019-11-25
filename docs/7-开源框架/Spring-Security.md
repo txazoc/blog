@@ -11,29 +11,13 @@ TokenEndpoint               /oauth/token
 CheckTokenEndpoint          /oauth/check_token
 TokenKeyEndpoint            /oauth/token_key
 
-RedirectResolver
-
 ### OAuth 2.0 Resource Server
 
 BasicAuthenticationFilter(Basic认证)                  Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
-AbstractUserDetailsAuthenticationProvider
 
 OAuth2AuthenticationProcessingFilter(OAuth2认证)      Authorization: Bearer 011bb863-f998-4285-8b8a-6ef62972d893
-OAuth2AuthenticationManager
 
 UsernamePasswordAuthenticationFilter
-
-ResourceServerTokenServices                         RemoteTokenServices
-
-DefaultLoginPageGeneratingFilter            默认登录页生成拦截器
-
-FilterSecurityInterceptor
-http://localhost:8081/oauth/authorize?response_type=code&client_id=client&scope=user&redirect_uri=http://www.baidu.com
-LoginUrlAuthenticationEntryPoint
-
-AbstractAuthenticationTargetUrlRequestHandler
-
-FilterChainProxy
 
 #### /oauth/authorize未登录
 
@@ -43,10 +27,6 @@ AuthorizationEndpoint.authorize()
 AbstractRememberMeServices
 
 SecurityContextPersistenceFilter
-
-#### /login
-
-Spring Security原理: http://blog.sina.com.cn/s/blog_5c0522dd0101doey.html
 
 ### Spring Security过滤器
 
@@ -69,8 +49,6 @@ RequestCacheAwareFilter
 #### /oauth/authorize
 
 GET http://localhost:6700/oauth/authorize?response_type=code&client_id=client&scope=user&state=test&redirect_uri=http://www.baidu.com
-
-https://www.baidu.com/?code=ZkaoN2&state=test
 
 #### /oauth/token获取Token
 
@@ -134,8 +112,6 @@ Authorization: Bearer 011bb863-f998-4285-8b8a-6ef62972d893
         * AuthenticationFailureHandler: 解析header中的referer，跳转登录页带上referer参数
     * .exceptionHandling().authenticationEntryPoint(): /oauth/authorize，匿名用户无权限访问处理，跳转登录页面
         * AuthenticationEntryPoint: 自定义，跳转登录页带上referer参数
-
-https://blog.csdn.net/ejinxian/article/details/47313539
 
 
 [<< 上一篇: Spring-MVC](7-开源框架/Spring-MVC.md)
