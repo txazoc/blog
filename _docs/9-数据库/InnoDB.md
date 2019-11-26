@@ -436,3 +436,46 @@ redo日志刷盘时机:
 * 后台线程刷，1s刷一次
 
 `innodb_flush_log_at_trx_commit`
+
+#### 二级索引下主键是否有序
+
+> 相同的二级索引下，叶子节点的记录项是否按主键排序
+
+创建表:
+
+```sql
+create table test(
+    id int(11) not null auto_increment primary key,
+    name varchar(3) not null,
+	index `name` (`name`)
+) ENGINE=InnoDB CHARSET=utf8;
+```
+
+插入10000条测试数据:
+
+```sql
+insert into test(name) values('cac');
+insert into test(name) values('ccb');
+insert into test(name) values('cca');
+insert into test(name) values('cac');
+insert into test(name) values('bac');
+insert into test(name) values('bac');
+insert into test(name) values('bcc');
+insert into test(name) values('bcc');
+insert into test(name) values('ccb');
+insert into test(name) values('bba');
+...
+```
+
+二级索引下主键排序的sql:
+
+```sql
+> explain select * from test where name = 'aaa' order by id limit 100,10;
++----+-------------+-------+------------+------+---------------+------+---------+-------+------+----------+--------------------------+
+| id | select_type | table | partitions | type | possible_keys | key  | key_len | ref   | rows | filtered | Extra                    |
++----+-------------+-------+------------+------+---------------+------+---------+-------+------+----------+--------------------------+
+|  1 | SIMPLE      | test  | NULL       | ref  | name          | name | 11      | const |  411 |   100.00 | Using where; Using index |
++----+-------------+-------+------------+------+---------------+------+---------+-------+------+----------+--------------------------+
+```
+
+通过explain可以看出，并没有`Using filesort`，因此可以得出结论，`相同的二级索引下，叶子节点的记录项是按主键排序的`
