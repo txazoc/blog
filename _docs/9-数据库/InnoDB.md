@@ -383,7 +383,7 @@ MySQL启动时完成初始化的Buffer Pool中所有的缓存页都是空闲的�
 
 ##### flush链表
 
-> 更新后未刷新到磁盘的缓存页(`脏页`)对应的控制块组成的一个链表
+> 修改后未刷新到磁盘的缓存页(`脏页`)对应的控制块组成的一个链表
 
 ![flush链表](../_media/db/flush_list.png)(80%)
 
@@ -391,12 +391,86 @@ MySQL启动时完成初始化的Buffer Pool中所有的缓存页都是空闲的�
 
 > Buffer Pool满了，free链表中没有多余的空闲缓存页时，怎么办？
 
-答案是`LRU链表`
+答案是`LRU链表`，`LRU链表`按照`最近最少使用`的原则去淘汰缓存页
 
-`LRU链表`按一定比例分成两部分
+**LRU链表的特点:**
 
-* young区域，热数据
-* old区域，冷数据
+* LRU链表按`一定比例`分成两部分，young区域和old区域，young区域(`热数据`)存储使用频率非常高的缓存页，old区域(`冷数据`)存储使用频率不是很高的缓存页，划分的比例由系统变量`innodb_old_blocks_pct`来控制，`innodb_old_blocks_pct`代表old区域在LRU链表中所占的比例
+
+```sql
+> show variables like 'innodb_old_blocks_pct';
++-----------------------+-------+
+| Variable_name         | Value |
++-----------------------+-------+
+| innodb_old_blocks_pct | 37    |
++-----------------------+-------+
+```
+
+![LRU链表](../_media/db/lru_list.png)(80%)
+
+* 访问某个页面，该页面已经缓存在Buffer Pool中，则直接把该页对应的控制块移动到`young区域的头部`
+* Buffer Pool中，free链表中没有多余的空闲缓存页时，从`old区域的尾部`淘汰缓存页
+* 磁盘上的某个页面在`初次`加载到Buffer Pool中的某个缓存页时，该缓存页对应的控制块会被放到`old区域的头部`，针对`预读`的优化，提高缓存命中率
+* 在对某个处在old区域的缓存页进行`第一次访问`时就在它对应的控制块中记录下来这个访问时间，如果后续的访问时间与第一次访问的时间在某个时间间隔内，那么该页面就不会被从old区域移动到young区域的头部，否则将它移动到young区域的头部，这个间隔时间由系统变量`innodb_old_blocks_time`控制，默认为1s，针对`全表扫描`的优化，提高缓存命中率
+
+##### 刷新脏页到磁盘
+
+> 后台有专门的线程每隔一段时间负责把`脏页刷新到磁盘`，这样可以不影响用户线程处理正常的请求
+
+脏页刷新到磁盘有两种路径:
+
+* `BUF_FLUSH_LRU`，从`LRU链表的冷数据`中刷新一部分页面到磁盘，后台线程定时从LRU链表尾部开始扫描一些页面，扫描的页面数量由系统变量`innodb_lru_scan_depth`来控制，如果发现脏页，则刷新脏页到磁盘
+
+```sql
+> show variables like 'innodb_lru_scan_depth';
++-----------------------+-------+
+| Variable_name         | Value |
++-----------------------+-------+
+| innodb_lru_scan_depth | 1024  |
++-----------------------+-------+
+```
+
+* `BUF_FLUSH_LIST`，从`flush链表`中刷新一部分页面到磁盘，后台线程定时从flush链表中刷新一部分页面到磁盘，刷新的速率取决于当时系统是不是很繁忙
+* `BUF_FLUSH_SINGLE_PAGE`，后台线程刷新脏页的进度比较慢，并且`old区域的尾部`没有可以直接释放掉的未修改页面，则不得不将`old区域的尾部`的一个脏页同步刷新到磁盘
+
+##### 多个Buffer Pool实例
+
+> 在Buffer Pool特别大的时候，可以将Buffer Pool拆分为若干个小的Buffer Pool，每个Buffer Pool都是独立的
+
+##### Buffer Pool状态信息
+
+查看InnoDB中`Buffer Pool`的状态信息:
+
+```sql
+> show engine innodb status\G;
+----------------------
+BUFFER POOL AND MEMORY
+----------------------
+Total large memory allocated 1099431936
+Dictionary memory allocated 7300777
+Buffer pool size   65528
+Free buffers       32004
+Database pages     34627
+Old database pages 12618
+Modified db pages  0
+Pending reads      0
+Pending writes: LRU 0, flush list 0, single page 0
+Pages made young 1373352, not young 60455298
+0.00 youngs/s, 0.00 non-youngs/s
+Pages read 10175174, created 1822107, written 219721377
+0.00 reads/s, 0.00 creates/s, 9.75 writes/s
+Buffer pool hit rate 1000 / 1000, young-making rate 0 / 1000 not 0 / 1000
+Pages read ahead 0.00/s, evicted without access 0.00/s, Random read ahead 0.00/s
+LRU len: 34627, unzip_LRU len: 3063
+I/O sum[3824]:cur[0], unzip sum[0]:cur[0]
+----------------------
+```
+
+* `Buffer pool size`: Buffer Pool中可以容纳的缓存页的数量
+* `Free buffers`: free链表的节点数
+* `Database pages`: LRU链表的节点数
+* `Old database pages`: LRU链表old区域的节点数
+* `Modified db pages`: 脏页的数量，即flush链表的节点数
 
 #### ACID
 
@@ -471,23 +545,65 @@ commit;
 9. 提交事务
 ```
 
-#### redo log重做日志
+#### redo log(重做日志)
+
+> redo日志本质上只是记录一下事务对数据库做了哪些修改，redo日志会把事务在执行过程中对数据库所做的所有修改都记录下来，在之后系统崩溃重启后可以把事务所做的任何修改都恢复出来
 
 ##### redo日志格式
 
+redo日志通用结构:
+
+![redo日志通用结构](../_media/db/redo_format.png)(80%)
+
 ##### redo日志缓冲区
 
-> redo log buffer
+> redo log buffer，重做日志缓冲区
 
-`ib_logfile0`、`ib_logfile1`
+redo log buffer的大小由系统变量`innodb_log_buffer_size`控制，默认大小为16M
+
+```sql
+> show variables like 'innodb_log_buffer_size';
++------------------------+----------+
+| Variable_name          | Value    |
++------------------------+----------+
+| innodb_log_buffer_size | 33554432 |
++------------------------+----------+
+```
+
+##### redo日志刷盘时机
 
 redo日志刷盘时机:
 
 * redo log buffer空间不足时
 * 事务提交时
-* 后台线程刷，1s刷一次
+* 后台线程刷盘，1s刷一次
 
-`innodb_flush_log_at_trx_commit`
+##### redo日志文件组
+
+redo日志默认刷新到MySQL数据目录的`ib_logfile0`和`ib_logfile1`两个磁盘文件中
+
+```sql
+> show variables like 'innodb_log_file%';
++---------------------------+----------+
+| Variable_name             | Value    |
++---------------------------+----------+
+| innodb_log_file_size      | 50331648 |
+| innodb_log_files_in_group | 2        |
++---------------------------+----------+
+```
+
+* innodb_log_file_size: 每个redo日志文件的大小
+* innodb_log_files_in_group: redo日志文件的个数，默认为2
+
+![redo日志文件组](../_media/db/redo_log_file.png)(80%)
+
+##### innodb_flush_log_at_trx_commit
+
+* 0: 由后台线程刷新redo日志到磁盘，数据库挂了，可能导致部分redo日志丢失
+* 1: 在事务提交时将redo日志同步刷新到磁盘，默认值
+* 2: 在事务提交时将redo日志写到操作系统的缓冲区，不保证刷新到磁盘，操作系统挂了，可能导致部分redo日志丢失
+
+#### undo log(撤销日志)
 
 #### 二级索引下主键是否有序
 
