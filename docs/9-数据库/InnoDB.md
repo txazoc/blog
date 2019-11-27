@@ -346,6 +346,58 @@ select index_field_1, index_field_2 where index_field_1 = 'value';
 * 用于排序
 * 用于分组
 
+#### Buffer Pool
+
+> 缓冲池，在内存中缓存磁盘中的页
+
+**缓冲池大小:**
+
+```sql
+> show variables like 'innodb_buffer_pool_size';
++-------------------------+-----------+
+| Variable_name           | Value     |
++-------------------------+-----------+
+| innodb_buffer_pool_size | 134217728 |
++-------------------------+-----------+
+```
+
+缓冲池由控制块和缓存页组成，每个页对应的控制信息占用的一块内存称为一个控制块，控制块和缓存页是一一对应的，缓存页的大小和磁盘上页的大小是一样的，默认都是16k
+
+<p style="text-align: center;"><img src="_media/db/buffer_pool.png" alt="Buffer Pool" style="width: 80%"></p>
+
+##### free链表
+
+> 所有空闲的缓存页对应的控制块组成的一个链表，也称为空闲链表
+
+MySQL启动时完成初始化的Buffer Pool中所有的缓存页都是空闲的，每一个缓存页对应的控制块都会被加入到free链表中
+
+<p style="text-align: center;"><img src="_media/db/free_list.png" alt="free链表" style="width: 80%"></p>
+
+从磁盘中加载一个页到Buffer Pool中时，从`free链表`中取出一个空闲的缓存页填充(填充缓存页，同步控制块)，然后把该缓存页从`free链表`中移除，表示该缓存页已经被使用了
+
+##### 缓存页的哈希表
+
+> 如何快速定位某个页在不在Buffer Pool中？
+
+答案是`哈希表`，`表空间号 + 页号`为`key`，`缓存页`为value
+
+##### flush链表
+
+> 更新后未刷新到磁盘的缓存页(`脏页`)对应的控制块组成的一个链表
+
+<p style="text-align: center;"><img src="_media/db/flush_list.png" alt="flush链表" style="width: 80%"></p>
+
+##### LRU链表
+
+> Buffer Pool满了，free链表中没有多余的空闲缓存页时，怎么办？
+
+答案是`LRU链表`
+
+`LRU链表`按一定比例分成两部分
+
+* young区域，热数据
+* old区域，冷数据
+
 #### ACID
 
 > ACID是数据库事务的四个特性
