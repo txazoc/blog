@@ -472,11 +472,11 @@ I/O sum[3824]:cur[0], unzip sum[0]:cur[0]
 * `Old database pages`: LRU链表old区域的节点数
 * `Modified db pages`: 脏页的数量，即flush链表的节点数
 
-#### ACID
+#### 事务
+
+##### ACID
 
 > ACID是数据库事务的四个特性
-
-#### 事务隔离级别
 
 * A: 原子性，Atomicity，一个事务中的所有操作，要么全部执行，要么全部不执行，不会停留在某个中间状态，允许回滚
     * commit: redo log
@@ -490,22 +490,116 @@ I/O sum[3824]:cur[0], unzip sum[0]:cur[0]
     * `innodb_flush_log_at_trx_commit`
     * `sync_binlog`
 
-事务并发会带来不一致的问题:
+#### redo log(重做日志)
 
-* 脏读
-* 不可重复读
-* 幻读
+> redo日志会把事务在执行过程中对数据库所做的所有修改都记录下来，在系统崩溃重启后可以把事务所做的任何修改都恢复出来
 
-为此，定义四种事务隔离级别:
+redo日志的优点:
 
-* `Read Uncommitted`: 读未提交，可能读到脏数据
-* `Read Committed`: 读已提交
+* redo日志占用的存储空间非常小，redo日志只包含表空间id、页号、偏移量、更新的值等数据
+* redo日志是顺序写入磁盘的，顺序IO效率比较高
+
+##### redo日志缓冲区
+
+> redo log buffer，重做日志缓冲区，写入redo日志时不直接写到磁盘上，而是先写到内存中的redo日志缓冲区
+
+redo log buffer的大小由系统变量`innodb_log_buffer_size`控制，默认大小为16M
+
+```sql
+> show variables like 'innodb_log_buffer_size';
++------------------------+----------+
+| Variable_name          | Value    |
++------------------------+----------+
+| innodb_log_buffer_size | 16777216 |
++------------------------+----------+
+```
+
+##### redo日志文件组
+
+> redo日志先写到redo log buffer中，然后再从redo log buffer刷新到磁盘的redo日志文件中
+
+MySQL数据目录下`ib_logfile0`和`ib_logfile1`两个磁盘文件就是redo日志文件，所有的redo日志文件组成一个`redo日志文件组`
+
+```sql
+> show variables like 'innodb_log_file%';
++---------------------------+----------+
+| Variable_name             | Value    |
++---------------------------+----------+
+| innodb_log_file_size      | 50331648 |
+| innodb_log_files_in_group | 2        |
++---------------------------+----------+
+```
+
+* `innodb_log_file_size`: 每个redo日志文件的大小
+* `innodb_log_files_in_group`: redo日志文件的个数，默认为2
+
+![redo日志文件组](../_media/db/redo_log_file.png)(80%)
+
+##### redo日志刷盘时机
+
+* redo log buffer空间不足时，redo日志占redo log buffer空间的一半时，就需要刷新redo日志到磁盘
+* 事务提交时
+* 后台线程刷盘，1s刷一次
+
+事务对应的脏页刷新到磁盘后，该事务的redo日志占用的空间就可以被覆盖重用了
+
+##### innodb_flush_log_at_trx_commit
+
+* `0`: 事务提交时不刷盘，由后台线程刷新redo日志到磁盘，数据库挂了，可能导致部分redo日志丢失
+* `1`: 在事务提交时将redo日志同步刷新到磁盘，默认值
+* `2`: 在事务提交时将redo日志写到操作系统的缓冲区，不保证刷新到磁盘，操作系统挂了，可能导致部分redo日志丢失
+
+#### undo log(撤销日志)
+
+> undo日志记录`insert`、`update`、`delete`的反向操作，在事务回滚时，用来恢复到事务执行前的状态
+
+undo日志存储在回滚段(`Rollback Segment`)
+
+包含了增、删、改操作的事务对undo日志的处理流程:
+
+* 事务开始，分配一个唯一的事务id，事务id是自增的
+* 针对每个写操作，生成undo日志，更新修改记录对应的`trx_id`的值为当前事务id，更新修改记录对应的`roll_pointer`的值为undo日志的指针
+* 回滚时，根据`roll_pointer`找到修改前的undo日志进行回滚操作
+* 事务提交后，undo日志不能立即被删除，等待`purge线程`进行清理
+
+#### 事务隔离级别
+
+事务并发执行会带来不一致的问题:
+
+* 脏读(`Dirty Read`): 一个事务读到了另一个未提交事务修改过的数据
+* 不可重复读: 一个事务只能读到另一个已经提交的事务修改过的数据
+* 幻读: 一个事务先根据某些条件查询出一些记录，之后另一个事务又向表中插入了符合这些条件的记录，原先的事务再次按照该条件查询时，能把另一个事务插入的记录也读出来
+
+为此，定义`四种事务隔离级别`:
+
+* `Read Uncommitted`: 未提交读，存在脏读、不可重复读、幻读问题
+* `Read Committed`: 已提交读，存在不可重复读、幻读问题
     * MVCC: 解决`脏读`
-* `Repeatable Read`: 可重复读，InnoDB默认隔离级别
+* `Repeatable Read`: 可重复读，存在`部分幻读`问题，`InnoDB默认隔离级别`
     * MVCC: 解决`脏读`、`不可重复读`
     * Gap锁/Next-Key锁: 解决部分`幻读`
 * `Serializable`: 串行化
     * `select`加共享锁: 解决所有并发问题
+
+#### MVCC
+
+> Multi-Version Concurrency Control，多版本并发控制
+
+InnoDB中，聚簇索引记录中包含两个必要的隐藏列`trx_id`和`roll_pointer`
+
+* `trx_id`: 每次一个事务对某条聚簇索引记录进行改动时，都会把该事务的事务id赋值给`trx_id`隐藏列
+* `roll_pointer`: 每次对某条聚簇索引记录进行改动时，都会把旧的版本写入到undo日志中，`roll_pointer`指向该undo日志
+
+每次对记录进行改动，都会记录一条undo日志，每条undo日志也都有一个roll_pointer属性(INSERT操作对应的undo日志没有该属性，因为该记录并没有更早的版本)，可以将这些undo日志都连起来，串成一个链表(`版本链`)，`版本链的头节点就是当前记录最新的值`，每个版本还包含生成该版本对应的事务id
+
+![undo日志链](../_media/db/undo_log_version.png)(80%)
+
+* `READ UNCOMMITTED`隔离级别的事务，直接读取记录的最新版本
+* `SERIALIZABLE`隔离级别的事务，加锁访问
+* `READ COMMITTED`隔离级别的事务，每次读取数据前都生成一个`ReadView`，读取最新的已提交事务的数据版本
+* `REPEATABLE READ`隔离级别的事务，在第一次读取数据时生成一个`ReadView`，读取第一次读取时可见的已提交事务的数据版本
+
+##### purge
 
 #### InnoDB事务实现
 
@@ -544,66 +638,6 @@ commit;
 8. redo log写入磁盘
 9. 提交事务
 ```
-
-#### redo log(重做日志)
-
-> redo日志本质上只是记录一下事务对数据库做了哪些修改，redo日志会把事务在执行过程中对数据库所做的所有修改都记录下来，在之后系统崩溃重启后可以把事务所做的任何修改都恢复出来
-
-##### redo日志格式
-
-redo日志通用结构:
-
-![redo日志通用结构](../_media/db/redo_format.png)(80%)
-
-##### redo日志缓冲区
-
-> redo log buffer，重做日志缓冲区
-
-redo log buffer的大小由系统变量`innodb_log_buffer_size`控制，默认大小为16M
-
-```sql
-> show variables like 'innodb_log_buffer_size';
-+------------------------+----------+
-| Variable_name          | Value    |
-+------------------------+----------+
-| innodb_log_buffer_size | 33554432 |
-+------------------------+----------+
-```
-
-##### redo日志刷盘时机
-
-redo日志刷盘时机:
-
-* redo log buffer空间不足时
-* 事务提交时
-* 后台线程刷盘，1s刷一次
-
-##### redo日志文件组
-
-redo日志默认刷新到MySQL数据目录的`ib_logfile0`和`ib_logfile1`两个磁盘文件中
-
-```sql
-> show variables like 'innodb_log_file%';
-+---------------------------+----------+
-| Variable_name             | Value    |
-+---------------------------+----------+
-| innodb_log_file_size      | 50331648 |
-| innodb_log_files_in_group | 2        |
-+---------------------------+----------+
-```
-
-* innodb_log_file_size: 每个redo日志文件的大小
-* innodb_log_files_in_group: redo日志文件的个数，默认为2
-
-![redo日志文件组](../_media/db/redo_log_file.png)(80%)
-
-##### innodb_flush_log_at_trx_commit
-
-* 0: 由后台线程刷新redo日志到磁盘，数据库挂了，可能导致部分redo日志丢失
-* 1: 在事务提交时将redo日志同步刷新到磁盘，默认值
-* 2: 在事务提交时将redo日志写到操作系统的缓冲区，不保证刷新到磁盘，操作系统挂了，可能导致部分redo日志丢失
-
-#### undo log(撤销日志)
 
 #### 二级索引下主键是否有序
 
