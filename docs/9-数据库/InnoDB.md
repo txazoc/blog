@@ -381,6 +381,8 @@ MySQL启动时完成初始化的Buffer Pool中所有的缓存页都是空闲的�
 
 答案是`哈希表`，`表空间号 + 页号`为`key`，`缓存页`为value
 
+查询的时候，先通过索引定位到对应的数据页，然后查找`哈希表`判断数据页是否在缓冲池中
+
 ##### flush链表
 
 > 修改后未刷新到磁盘的缓存页(`脏页`)对应的控制块组成的一个链表
@@ -492,7 +494,7 @@ I/O sum[3824]:cur[0], unzip sum[0]:cur[0]
 
 #### redo log(重做日志)
 
-> redo日志会把事务在执行过程中对数据库所做的所有修改都记录下来，在系统崩溃重启后可以把事务所做的任何修改都恢复出来
+> redo日志会把事务在执行过程中对数据库所做的所有修改都记录下来，记录的是对某个数据页的物理操作，在系统崩溃重启后可以把事务所做的任何修改都恢复出来
 
 redo日志的优点:
 
@@ -533,6 +535,8 @@ MySQL数据目录下`ib_logfile0`和`ib_logfile1`两个磁盘文件就是redo日
 * `innodb_log_file_size`: 每个redo日志文件的大小
 * `innodb_log_files_in_group`: redo日志文件的个数，默认为2
 
+所有的redo日志文件构成一个环，写redo日志时，先写`ib_logfile0`，`ib_logfile0`写满后，再写`ib_logfile1`，以此类推，最后一个redo日志文件写满后，重新回到`ib_logfile0`
+
 <p style="text-align: center;"><img src="_media/db/redo_log_file.png" alt="redo日志文件组" style="width: 80%"></p>
 
 ##### redo日志刷盘时机
@@ -551,9 +555,9 @@ MySQL数据目录下`ib_logfile0`和`ib_logfile1`两个磁盘文件就是redo日
 
 #### undo log(撤销日志)
 
-> undo日志记录`insert`、`update`、`delete`的反向操作，在事务回滚时，用来恢复到事务执行前的状态
+> undo日志是记录`insert`、`update`、`delete`的反向操作的逻辑日志，在事务回滚时，用来恢复到事务执行前的状态，同时还用来支持`MVCC`
 
-undo日志存储在回滚段(`Rollback Segment`)
+undo日志存储在`共享表空间`的回滚段(`Rollback Segment`)
 
 包含了增、删、改操作的事务对undo日志的处理流程:
 
@@ -566,40 +570,71 @@ undo日志存储在回滚段(`Rollback Segment`)
 
 事务并发执行会带来不一致的问题:
 
-* 脏读(`Dirty Read`): 一个事务读到了另一个未提交事务修改过的数据
-* 不可重复读: 一个事务只能读到另一个已经提交的事务修改过的数据
-* 幻读: 一个事务先根据某些条件查询出一些记录，之后另一个事务又向表中插入了符合这些条件的记录，原先的事务再次按照该条件查询时，能把另一个事务插入的记录也读出来
+* 脏读(`Dirty Read`): 一个事务读取了另一个未提交事务修改过的数据，如果另一个未提交事务回滚了，当前事务就读取到了脏数据
+* 不可重复读(`Unrepeatable Read`): 一个事务读取了另一个已提交事务修改过的数据，可能会导致当前事务多次重复读取的结果不一致
+* 幻读(`Phantom Read`): 一个事务先根据某些条件查询出一些记录，之后另一个事务又向表中插入了符合这些条件的记录，然后当前事务再次根据这些条件查询时，能把另一个事务插入的记录也读出来
 
-为此，定义`四种事务隔离级别`:
+把这些问题按照严重性排下序: `脏读` &gt; `不可重复读` &gt; `幻读`
 
-* `Read Uncommitted`: 未提交读，存在脏读、不可重复读、幻读问题
-* `Read Committed`: 已提交读，存在不可重复读、幻读问题
-    * MVCC: 解决`脏读`
-* `Repeatable Read`: 可重复读，存在`部分幻读`问题，`InnoDB默认隔离级别`
-    * MVCC: 解决`脏读`、`不可重复读`
-    * Gap锁/Next-Key锁: 解决部分`幻读`
-* `Serializable`: 串行化
-    * `select`加共享锁: 解决所有并发问题
+为了解决这些问题，需要`舍弃一部分隔离性`来`保证一致性`，为此，定义`四种事务隔离级别`:
+
+* `Read Uncommitted`: `读未提交`，存在脏读、不可重复读、幻读问题
+* `Read Committed`: `读已提交`，存在不可重复读、幻读问题
+* `Repeatable Read`: `可重复读`，存在`幻读`问题，`InnoDB默认隔离级别`
+* `Serializable`: `可串行化`
+
+> `注`: MySQL在`Repeatable Read`隔离级别下解决了`幻读`问题
+
+从技术上具体如何解决`脏读`、`不可重复读`、`幻读`问题？主要有两种技术方案:
+
+* `方案一`: 读操作使用MVCC，写操作加锁
+* `方案二`: 读、写操作都加锁
 
 #### MVCC
 
-> Multi-Version Concurrency Control，多版本并发控制
+> Multi-Version Concurrency Control，多版本并发控制，在`Read Committed`和`Repeatable Read`隔离级别下`读操作不加锁`，提高读写并发度
 
 InnoDB中，聚簇索引记录中包含两个必要的隐藏列`trx_id`和`roll_pointer`
 
-* `trx_id`: 每次一个事务对某条聚簇索引记录进行改动时，都会把该事务的事务id赋值给`trx_id`隐藏列
-* `roll_pointer`: 每次对某条聚簇索引记录进行改动时，都会把旧的版本写入到undo日志中，`roll_pointer`指向该undo日志
+* `trx_id`: 每次一个事务对某条聚簇索引记录进行修改时，都会把该事务的事务id赋值给`trx_id`隐藏列
+* `roll_pointer`: 每次对某条聚簇索引记录进行修改时，都会把旧的版本写入到`undo日志`中，通过`roll_pointer`指向该undo日志
 
-每次对记录进行改动，都会记录一条undo日志，每条undo日志也都有一个roll_pointer属性(INSERT操作对应的undo日志没有该属性，因为该记录并没有更早的版本)，可以将这些undo日志都连起来，串成一个链表(`版本链`)，`版本链的头节点就是当前记录最新的值`，每个版本还包含生成该版本对应的事务id
+##### 版本链
 
-<p style="text-align: center;"><img src="_media/db/undo_log_version.png" alt="undo日志链" style="width: 80%"></p>
+> 每次对记录进行修改，都会生成一条undo日志，每条undo日志也都有一个`roll_pointer`指向更早的undo日志，这些undo日志通过`roll_pointer`串成一个链表(`版本链`)，`版本链的头节点就是当前记录最新的值`，每个版本还包含生成该版本对应的事务id
 
-* `READ UNCOMMITTED`隔离级别的事务，直接读取记录的最新版本
-* `SERIALIZABLE`隔离级别的事务，加锁访问
-* `READ COMMITTED`隔离级别的事务，每次读取数据前都生成一个`ReadView`，读取最新的已提交事务的数据版本
-* `REPEATABLE READ`隔离级别的事务，在第一次读取数据时生成一个`ReadView`，读取第一次读取时可见的已提交事务的数据版本
+<p style="text-align: center;"><img src="_media/db/undo_log_version.png" alt="版本链" style="width: 80%"></p>
 
-##### purge
+有了多个版本后，如何判断当前事务读取哪个版本？为此，提出了`ReadView`的概念
+
+##### ReadView
+
+ReadView主要包含4个重要属性:
+
+* `m_ids`: 生成`ReadView`时，当前活跃的读写事务的事务id列表
+* `min_trx_id`: `m_ids`中的最小值
+* `max_trx_id`: 生成`ReadView`时，下一个分配的事务id
+* `creator_trx_id`: 生成`ReadView`的事务的事务id，即当前事务的事务id，如果当前事务是只读事务，则`creator_trx_id`为0
+
+然后，按照下列规则判断某个版本是否可见，`trx_id`为被访问版本的事务id:
+
+* `trx_id` == `creator_trx_id`，当前事务正在修改的版本，可见
+* `trx_id` &lt; `min_trx_id`，生成该版本的事务在当前事务生成`ReadView`前已提交，可见
+* `trx_id` &gt;= `max_trx_id`，生成该版本的事务在当前事务生成`ReadView`后才开启，不可见
+* `min_trx_id` &lt;= `trx_id` &lt; `max_trx_id`
+    * `trx_id`在`m_ids`列表中，生成该版本的事务还是活跃的，不可见
+    * `trx_id`不在`m_ids`列表中，生成该版本的事务已提交，可见
+
+生成`ReadView`时，从`版本链`的头结点开始遍历，直到找到`第一个可见的版本`
+
+##### Read Committed & Repeatable Read
+
+在InnoDB中，`Read Committed`和`Repeatable Read`隔离级别都是使用的`MVCC`，它们的区别就在于生成`ReadView`的时机不同
+
+* `Read Committed`: 每次读取数据前都生成一个`ReadView`
+* `Repeatable Read`: 在第一次读取数据时生成一个`ReadView`，之后每次读取都复用这个`ReadView`
+
+> `注`: 为了支持MVCC，`update`操作的undo日志不能被立即删除掉，`delete`操作会在记录上打上一个删除标记，也不能被立即删除掉，当确定了没有`ReadView`再来访问`update`操作的undo日志和被打上删除标记的记录后，后台的`purge线程`会把它们真正删除掉
 
 #### InnoDB事务实现
 
@@ -625,18 +660,16 @@ commit;
 ```
 
 ```console
-1. 开始事务
+1. 开始事务，分配事务id，获取锁，没有获取到锁则等待
 
-2. 记录undo log: update Account set amount -= 50 where userId = 1000
-3. 修改buffer pool: update Account set amount += 50 where userId = 1000
-4. 记录redo log: update Account set amount += 50 where userId = 1000
+在主键索引上查找userId = 1000对应数据页的页号，根据页号判断对应数据页是否在缓冲池中，如果缓冲池中已存在则直接取出，否则从磁盘加载数据页到缓冲池中
 
-5. 记录undo log: update Account set amount += 50 where userId = 2000
-6. 修改buffer pool: update Account set amount -= 50 where userId = 2000
-7. 记录redo log: update Account set amount -= 50 where userId = 2000
+修改Buffer Pool，在数据页中查找到userId = 1000的行记录，读取，将amount加50，写入内存的数据页中
+
+生成undo log，
 
 8. redo log写入磁盘
-9. 提交事务
+9. 提交事务，释放锁
 ```
 
 #### 锁
