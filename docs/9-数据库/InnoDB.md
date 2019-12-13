@@ -643,7 +643,7 @@ ReadView主要包含4个重要属性:
 * `读-读`: 并发事务读取相同的记录，不会引发什么问题
 * `写-写`: 并发事务修改相同的记录，会发生`脏写`问题，通过`加锁`解决
 
-<p style="text-align: center;"><img src="_media/db/record_lock.png" alt="加锁" style="width: 80%"></p>
+<p style="text-align: center;"><img src="_media/db/lock_info.png" alt="加锁" style="width: 80%"></p>
 
 `trx信息`代表这个锁结构是哪个事务生成的，`is_waiting`代表当前事务是否在等待，`is_waiting`为true代表加锁成功，`is_waiting`为false代表加锁失败，阻塞等待
 
@@ -670,7 +670,7 @@ select * from t where id = 1;
 * `共享锁`，`Shared Lock`，`S锁`，在事务要读取一条记录时，先获取该记录的S锁
 * `独占锁`，`排他锁`，`Exclusive Lock`，`X锁`，在事务要修改一条记录时，先获取该记录的X锁
 
-`S锁`和`X锁`的兼容性:
+`S锁和X锁的兼容性`:
 
 | 兼容性 | X | S |
 | -- | -- | -- |
@@ -697,7 +697,7 @@ select ... for update;
     * 意向独占锁: `IX锁`，当事务准备在某条记录上加X锁时，先在表级别加一个IX锁
 * 行锁
 
-表锁和意向锁的兼容性:
+`表锁和意向锁的兼容性`:
 
 | 兼容性 | X | IX | S | IS |
 | --- | --- | --- | --- | --- |
@@ -705,6 +705,33 @@ select ... for update;
 | IX | - | `+` | - | `+` |
 | S  | - | - | `+` | `+` |
 | IS | - | `+` | `+` | `+` |
+
+`总结`下InnoDB加锁的过程:
+
+* 给表加`S锁`，根据`表锁和意向锁的兼容性`判断是否可以加`S锁`
+* 给表加`X锁`，根据`表锁和意向锁的兼容性`判断是否可以加`X锁`
+* 给记录加`S锁`，先尝试给表加`IS锁`，根据`表锁和意向锁的兼容性`判断是否可以加`IS锁`，加锁成功后，根据`S锁和X锁的兼容性`判断是否可以加`S锁`
+* 给记录加`X锁`，先尝试给表加`IX锁`，根据`表锁和意向锁的兼容性`判断是否可以加`IX锁`，加锁成功后，根据`S锁和X锁的兼容性`判断是否可以加`X锁`
+
+##### 行锁
+
+> 记录锁，在记录上加的锁
+
+* `Record Lock`: `记录锁`，锁一条记录，记录锁有`S锁`和`X锁`之分
+
+<p style="text-align: center;"><img src="_media/db/record_lock.png" alt="Record Lock" style="width: 80%"></p>
+
+* `Gap Lock`: `间隙锁`，锁记录之间的间隙`(m, n)`，用来解决幻读问题，`防止插入幻影记录`
+
+<p style="text-align: center;"><img src="_media/db/gap_lock.png" alt="Gap Lock" style="width: 80%"></p>
+
+> 给一条记录加Gap锁，就是不允许其它事务在该记录前面的间隙中插入新记录
+
+* `Next-Key Lock`: `记录锁` + `间隙锁`的组合，`(m, n]`
+
+<p style="text-align: center;"><img src="_media/db/next_key_lock.png" alt="Next-Key Lock" style="width: 80%"></p>
+
+* `Insert Intention Lock`: `插入意向锁`，插入新数据时，等待`Gap锁`释放而生成的锁结构
 
 #### InnoDB事务实现
 
