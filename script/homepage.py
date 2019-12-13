@@ -10,6 +10,7 @@ sourceDir = os.getcwd() + '/_docs'
 destDir = os.getcwd() + '/docs'
 encoding = sys.getfilesystemencoding()
 regex_image = '!\[(.*)\]\((.*)\)\((.*)\)'
+muduleNum = 14
 
 class Module:
     def __init__(self, srcPath, destPath, fileName, moduleName):
@@ -28,7 +29,7 @@ class Md:
 
 def buildHomepage(localDebug):
     f = open((sourceDir if localDebug == 'true' else destDir) + '/homepage.md', 'w')
-    modules = [''] * 13
+    modules = [''] * muduleNum
     dirs = os.listdir(sourceDir)
     for dir in dirs:
         srcPath = sourceDir + '/' + dir
