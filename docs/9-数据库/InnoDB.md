@@ -651,6 +651,10 @@ ReadView主要包含4个重要属性:
 
 如何解决读写并发问题，除了`MVCC`，还有`加锁`
 
+> 加锁只是解决并发事务执行过程中引起的脏写、脏读、不可重复读、幻读问题的一种解决方案
+> 
+> MVCC是解决脏读、不可重复读、幻读问题的另一种解决方案
+
 ##### 一致性读(Consistent Read)
 
 > 事务利用`MVCC`进行的读取操作称为`一致性读`，也称为`一致性非锁定读`，也称为`快照读`，`一致性读`不会对表中的任何记录做加锁操作
@@ -732,6 +736,60 @@ select ... for update;
 <p style="text-align: center;"><img src="_media/db/next_key_lock.png" alt="Next-Key Lock" style="width: 80%"></p>
 
 * `Insert Intention Lock`: `插入意向锁`，插入新数据时，等待`Gap锁`释放而生成的锁结构
+
+#### 加锁分析
+
+##### 普通的select语句
+
+* READ UNCOMMITTED隔离级别: 不加锁，读取记录的最新版本
+* READ COMMITTED隔离级别: 不加锁，每次`select`时生成一个`ReadView`
+* REPEATABLE READ隔离级别: 不加锁，第一次`select`时生成一个`ReadView`
+* SERIALIZABLE隔离级别
+    * autocommit=0，禁用自动提交，普通的select语句会被转为`select ... lock in share mode`
+    * autocommit=1，启用自动提交，不加锁，使用MVCC生成一个`ReadView`
+
+##### 锁定读的语句
+
+锁定读的语句包括:
+
+* `select ... lock in share mode`
+* `select ... for update`
+* `update ...`
+* `delete ...`
+
+`加锁分析`:
+
+* 主键等值查询
+    * `select ... lock in share mode`: 主键索引加`S记录锁`
+    * `select ... for update`: 主键索引加`X记录锁`
+    * `update ...`
+        * 没有更新二级索引: 主键索引加`X记录锁`
+        * 更新了二级索引: 主键索引加`X记录锁`，二级索引加`X记录锁`
+    * `delete ...`: 主键索引加`X记录锁`，二级索引加`X记录锁`
+* 主键范围查询
+    * `select ... lock in share mode`: 先查找边界条件，然后通过链表遍历，给每一个符合条件的记录加`S记录锁`
+    * `select ... for update`: 先查找边界条件，然后通过链表遍历，给每一个符合条件的记录加`X记录锁`
+    * `update ...`
+        * 没有更新二级索引: 先查找边界条件，然后通过链表遍历每一个符合条件的记录，主键索引加`X记录锁`
+        * 更新了二级索引: 先查找边界条件，然后通过链表遍历每一个符合条件的记录，主键索引加`X记录锁`，二级索引加`X记录锁`
+    * `delete ...`: 先查找边界条件，然后通过链表遍历每一个符合条件的记录，主键索引加`X记录锁`，二级索引加`X记录锁`
+* 二级索引等值查询
+    * `select ... lock in share mode`: 二级索引加`S记录锁`，主键索引加`S记录锁`
+    * `select ... for update`: 二级索引加`X记录锁`，主键索引加`X记录锁`
+    * `update ...`: 二级索引加`X记录锁`，主键索引加`X记录锁`
+    * `delete ...`: 二级索引加`X记录锁`，主键索引加`X记录锁`
+* 二级索引范围查询
+    * `select ... lock in share mode`: 遍历每一个符合条件的二级索引记录，二级索引加`S记录锁`，主键索引加`S记录锁`
+    * `select ... for update`: 遍历每一个符合条件的二级索引记录，二级索引加`X记录锁`，主键索引加`X记录锁`
+    * `update ...`: 遍历每一个符合条件的二级索引记录，二级索引加`X记录锁`，主键索引加`X记录锁`
+    * `delete ...`: 遍历每一个符合条件的二级索引记录，二级索引加`X记录锁`，主键索引加`X记录锁`
+* 全表扫描
+    * `select ... lock in share mode`: 
+    * `select ... for update`: 
+    * `update ...`: 
+    * `delete ...`: 
+
+##### insert语句
 
 #### InnoDB事务实现
 
