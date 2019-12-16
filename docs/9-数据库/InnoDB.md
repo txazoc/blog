@@ -741,12 +741,12 @@ select ... for update;
 
 ##### 普通的select语句
 
-* READ UNCOMMITTED隔离级别: 不加锁，读取记录的最新版本
-* READ COMMITTED隔离级别: 不加锁，每次`select`时生成一个`ReadView`
-* REPEATABLE READ隔离级别: 不加锁，第一次`select`时生成一个`ReadView`
-* SERIALIZABLE隔离级别
-    * autocommit=0，禁用自动提交，普通的select语句会被转为`select ... lock in share mode`
-    * autocommit=1，启用自动提交，不加锁，使用MVCC生成一个`ReadView`
+* `READ UNCOMMITTED`隔离级别: 不加锁，读取记录的最新版本
+* `READ COMMITTED`隔离级别: 不加锁，每次`select`时生成一个`ReadView`
+* `REPEATABLE READ`隔离级别: 不加锁，第一次`select`时生成一个`ReadView`
+* `SERIALIZABLE`隔离级别
+    * `autocommit=0`，禁用自动提交，普通的select语句会被转为`select ... lock in share mode`
+    * `autocommit=1`，启用自动提交，不加锁，使用MVCC生成一个`ReadView`
 
 ##### 锁定读的语句
 
