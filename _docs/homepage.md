@@ -106,6 +106,7 @@
 #### 11. 中间件
 
 * [ElasticSearch](11-中间件/ElasticSearch.md)
+* [Nginx](11-中间件/Nginx.md)
 * [Redis](11-中间件/Redis.md)
 * [Tomcat](11-中间件/Tomcat.md)
 * [消息队列](11-中间件/消息队列.md)
