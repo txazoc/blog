@@ -77,7 +77,7 @@
 * [ARP](8-网络通信/ARP.md)
 * [HTTP](8-网络通信/HTTP.md)
 * [TCP](8-网络通信/TCP.md)
-* [VRRP](8-网络通信/VRRP.md)
+* [虚拟IP](8-网络通信/虚拟IP.md)
 
 #### 9. 数据库
 

@@ -74,8 +74,10 @@
 
 #### 8. 网络通信
 
+* [ARP](8-网络通信/ARP.md)
 * [HTTP](8-网络通信/HTTP.md)
 * [TCP](8-网络通信/TCP.md)
+* [虚拟IP](8-网络通信/虚拟IP.md)
 
 #### 9. 数据库
 
@@ -106,6 +108,7 @@
 #### 11. 中间件
 
 * [ElasticSearch](11-中间件/ElasticSearch.md)
+* [LVS](11-中间件/LVS.md)
 * [Nginx](11-中间件/Nginx.md)
 * [Redis](11-中间件/Redis.md)
 * [Tomcat](11-中间件/Tomcat.md)

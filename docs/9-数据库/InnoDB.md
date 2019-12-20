@@ -871,6 +871,6 @@ insert into test(name) values('bba');
 通过explain可以看出，并没有`Using filesort`，因此可以得出结论，`相同的二级索引下，叶子节点的记录项是按主键排序的`
 
 
-[<< 上一篇: VRRP](8-网络通信/VRRP.md)
+[<< 上一篇: 虚拟IP](8-网络通信/虚拟IP.md)
 
 [>> 下一篇: MySQL](9-数据库/MySQL.md)

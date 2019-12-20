@@ -1,24 +1,8 @@
 ### ARP
 
-> 根据ip地址查询mac地址
+> Address Resolution Protocol，`地址解析协议`，根据ip地址获取mac地址
 
-#### ARP缓存表
-
-```console
-> arp -a
-? (192.168.94.109) at 00:50:56:81:cb:fc [ether] on eth0
-? (192.168.95.153) at e4:54:e8:a1:ee:c8 [ether] on eth0
-? (192.168.94.29) at 00:50:56:ae:11:63 [ether] on eth0
-? (192.168.95.224) at 44:82:e5:a3:38:04 [ether] on eth0
-? (192.168.94.58) at 00:50:56:ae:73:9f [ether] on eth0
-? (192.168.94.21) at 00:50:56:ae:63:11 [ether] on eth0
-? (192.168.94.106) at 00:50:56:ae:20:0c [ether] on eth0
-? (192.168.95.221) at 2c:ab:00:15:a6:70 [ether] on eth0
-? (192.168.94.51) at 00:50:56:ae:70:97 [ether] on eth0
-? (192.168.94.45) at 00:50:56:ae:25:de [ether] on eth0
-```
-
-#### ARP请求响应
+#### ARP数据包
 
 * 单播请求报文
 
@@ -69,4 +53,17 @@ Address Resolution Protocol (reply)
     Sender IP address: 192.168.80.254
     Target MAC address: Dell_87:d7:cc (b0:83:fe:87:d7:cc)
     Target IP address: 192.168.80.34
+```
+
+#### ARP缓存表
+
+> 本机缓存ip地址和mac地址的映射关系
+
+```console
+> arp -a
+(192.168.94.109) at 00:50:56:81:cb:fc [ether] on eth0
+(192.168.95.153) at e4:54:e8:a1:ee:c8 [ether] on eth0
+(192.168.94.29) at 00:50:56:ae:11:63 [ether] on eth0
+(192.168.95.224) at 44:82:e5:a3:38:04 [ether] on eth0
+(192.168.94.58) at 00:50:56:ae:73:9f [ether] on eth0
 ```
