@@ -1,31 +1,10 @@
 ## Spring Cloud
 
+https://www.cnblogs.com/crazymakercircle/p/11674597.html
+
 ### Spring Cloud架构图
 
 <p style="text-align: center;"><img src="_media/distribution/spring-cloud.png" alt="Spring Cloud" style="width: 100%"></p>
-
-### Zuul
-
-> 微服务网关
-
-* 路由转发、负载均衡
-* filter过滤
-* 限流、降级
-* 鉴权、监控、ip黑名单
-
-Zuul执行流程:
-
-* ZuulServlet: RequestContext(ThreadLocal)
-* `pre filters`
-    * PreDecorationFilter: 路由查找
-* `route filters`
-    * RibbonRoutingFilter: (通过Ribbon、Hystrix、HttpClients转发请求)
-* `post filters`
-    * SendResponseFilter: 写response
-
-#### Zuul Filter
-
-<p style="text-align: center;"><img src="_media/distribution/zuul-filter.png" alt="Zuul Filter" style="width: 80%"></p>
 
 ### Eureka
 

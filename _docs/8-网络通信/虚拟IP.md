@@ -10,25 +10,25 @@
 
 ##### VRRP状态机
 
-* Initialize
-* Master
+* `Initialize`
+* `Master`
     * 定时发送VRRP报文
     * 以虚拟MAC地址响应对虚拟IP地址的ARP请求
     * 转发目的MAC地址为虚拟MAC地址的IP报文
-* Backup
+* `Backup`
     * 接收Master发送的VRRP报文，判断Master状态是否正常
     * 对虚拟IP地址的ARP请求，不做响应
     * 丢弃目的IP地址为虚拟IP地址的IP报文
 
-#### Keepalived主从切换
+#### Keepalived主从
 
-* Master
+* `Master`: 主机
     * IP: `192.168.100.1`
     * MAC: `2c:33:11:87:d6:db`
-* Backup
+* `Backup`: 备机
     * IP: `192.168.100.2`
     * MAC: `b0:83:fe:87:d7:cc`
-* VIP: `192.168.100.3`
+* `VIP`: `192.168.100.3`
 
 **Master Keepalived配置:**
 

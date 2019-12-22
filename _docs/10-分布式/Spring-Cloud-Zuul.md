@@ -1,5 +1,7 @@
 ### Spring-Cloud-Zuul
 
+> Zuul，微服务网关
+
 #### Zuul功能
 
 * 鉴权
@@ -22,7 +24,7 @@
 * `post filters`
     * SendResponseFilter: 写response
 * `error filters`
-    * SendErrorFilter: 抛异常，forward到`error.path`
+    * SendErrorFilter: 抛异常，forward到`${error.path}`
 
 **服务id路由:**
 
@@ -46,3 +48,19 @@ zuul:
       path=/index/**
       url=http://127.0.0.1:9999
 ```
+
+#### Zuul架构图
+
+![Zuul Filter](../_media/distribution/zuul-filter.png)(60%)
+
+![Zuul Lifecycle](../_media/distribution/zuul-lifecycle.png)(60%)
+
+#### Zuul初始化
+
+ZuulProxyAutoConfiguration
+
+* 
+
+#### Zuul配置
+
+* zuul.ribbon.eager-load.enabled = true，开启Ribbon的饥饿加载模式
