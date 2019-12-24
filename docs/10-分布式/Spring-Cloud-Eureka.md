@@ -1,5 +1,9 @@
 ### Spring-Cloud-Eureka
 
+EurekaInstanceConfigBean
+
+https://github.com/Netflix/eureka/wiki/Eureka-REST-operations
+
 
 [<< 上一篇: RPC](10-分布式/RPC.md)
 
