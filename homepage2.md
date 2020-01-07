@@ -37,7 +37,6 @@ https://github.com/AobingJava/JavaFamily
 * [JVM CPU Profiler技术原理及源码深度解析](https://mp.weixin.qq.com/s/RKqmy8dw7B7WtQc6Xy2CLA)
 * [面试被问：如果系统 CPU 突然飙升且 GC 频繁，你该如何排查？](https://zhuanlan.zhihu.com/p/84203026)
 * [关于GC原理和性能调优，看这一篇就够了! ](https://mp.weixin.qq.com/s/uvYmmrfDuUfc4Z5SOblG3w)
-* [知乎技术分享：知乎千万级并发的高性能长连接网关技术实践](http://www.52im.net/forum.php?mod=viewthread&tid=2737&highlight=%D6%AA%BA%F5%C7%A7%CD%F2%BC%B6%B2%A2%B7%A2%B5%C4%B8%DF%D0%D4%C4%DC)
 
 https://www.zhihu.com/question/31215862/answer/733862803
 
