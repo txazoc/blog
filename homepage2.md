@@ -1,5 +1,8 @@
 ## Start
 
+https://cloud.tencent.com/developer/article/1368375
+https://cloud.tencent.com/developer/article/1368207
+
 ## Pre
 
 https://github.com/ZhongFuCheng3y/3y
@@ -27,8 +30,6 @@ https://github.com/AobingJava/JavaFamily
 * [LeetCode Animation All in One](https://github.com/MisterBooo/LeetCodeAnimation)
 * [小公司出身的我，是如何拿下知名独角兽公司offer的](https://juejin.im/post/5c8e7893f265da682b2e2a4e)
 * [https://juejin.im/post/5ba591386fb9a05cd31eb85f](https://juejin.im/post/5ba591386fb9a05cd31eb85f)
-* [https://cloud.tencent.com/developer/article/1368375](https://cloud.tencent.com/developer/article/1368375)
-* [http://mysql.taobao.org/monthly/](http://mysql.taobao.org/monthly/)
 
 * [阿里蚂蚁金服超全126道面试题](https://zhuanlan.zhihu.com/p/78673556)
 * [腾讯工作近十年大佬：不是我打击你！你可能真的不会写Java](https://zhuanlan.zhihu.com/p/71829028)
@@ -39,7 +40,3 @@ https://github.com/AobingJava/JavaFamily
 * [关于GC原理和性能调优，看这一篇就够了! ](https://mp.weixin.qq.com/s/uvYmmrfDuUfc4Z5SOblG3w)
 
 https://www.zhihu.com/question/31215862/answer/733862803
-
-#### todo
-
-* https://mp.weixin.qq.com/s/NxMMu-AS4c1X0ofaUDghTQ
