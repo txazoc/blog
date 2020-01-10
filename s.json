@@ -1,0 +1,16 @@
+{
+  "mappings": {
+    "test2": {
+      "properties": {
+        "int1": {
+          "type": "integer",
+          "index": true
+        },
+        "int2": {
+          "type": "integer",
+          "index": false
+        }
+      }
+    }
+  }
+}
