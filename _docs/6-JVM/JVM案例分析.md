@@ -13,3 +13,10 @@
 * 解决方案
     * 关闭session
     * 调小session过期时间(默认30分钟)
+
+### CPU飙高
+
+* `top` -&gt; 进程id
+* `top -Hp 进程id` -&gt; 线程id(十进制) -&gt; `printf "%x"` -&gt; 线程id(十六进制)
+* jstack 进程id -&gt; 线程堆栈(十六进制)
+* 线程堆栈中查找线程id -&gt; 目标线程
