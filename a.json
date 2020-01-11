@@ -1,0 +1,6 @@
+{
+    "script": "ctx._source.status+=status",
+    "params": {
+        "status": 1
+    }
+}

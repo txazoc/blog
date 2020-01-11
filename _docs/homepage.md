@@ -1,5 +1,6 @@
 #### 1. 数据结构与算法
 
+* [LeetCode](1-数据结构与算法/LeetCode.md)
 * [LRU缓存机制](1-数据结构与算法/LRU缓存机制.md)
 * [三数之和](1-数据结构与算法/三数之和.md)
 * [两数相加](1-数据结构与算法/两数相加.md)
@@ -53,7 +54,7 @@
 
 #### 5. 设计模式
 
-* [单例模式](5-设计模式/单例模式.md)
+* [设计模式](5-设计模式/设计模式.md)
 
 #### 6. JVM
 
@@ -113,6 +114,7 @@
 #### 11. 中间件
 
 * [ElasticSearch](11-中间件/ElasticSearch.md)
+* [ElasticSearch权威指南](11-中间件/ElasticSearch权威指南.md)
 * [LVS](11-中间件/LVS.md)
 * [Nginx](11-中间件/Nginx.md)
 * [Redis](11-中间件/Redis.md)
