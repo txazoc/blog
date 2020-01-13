@@ -355,7 +355,7 @@ GET /user/user/_search
 GET /app/_search
 ```
 
-#### 分页
+##### 分页
 
 `from`默认为0，`size`默认为10
 
@@ -369,15 +369,29 @@ GET /app/_search
 
 > `注`: 避免深度分页
 
+##### match_all查询
+
+> 匹配所有文档的查询
+
+```js
+GET /test/test
+{
+    "match_all": {}
+}
+```
+
 ##### match查询
+
+* 全文字段: 分词 -&gt; 查询
+* 精确值字段: 精确匹配，可以使用`filter查询`取代
 
 ```js
 {
-  "query": {
-    "match": {
-      "name": "游戏"
+    "query": {
+        "match": {
+            "name": "游戏"
+        }
     }
-  }
 }
 ```
 
@@ -395,7 +409,118 @@ GET /app/_search
 }
 ```
 
+##### range查询
+
+> 适用于数值型字段的范围查询
+
+**range查询操作符:**
+
+* gt: 大于
+* gte: 大于等于
+* lt: 小于
+* lte: 小于等于
+
+```js
+{
+    "query": {
+        "filter": {
+            "range": {
+                "age": {
+                    "gte": 20,
+                    "lt": 30
+                }
+            }
+        }
+    }
+}
+```
+
+##### term查询
+
+> 精确值匹配
+
+```js
+{
+    "term": {
+        "name": "admin"
+    }
+}
+```
+
+##### terms查询
+
+> 多值精确匹配
+
+```js
+{
+    "terms": {
+        "name": [ "root", "admin" ]
+    }
+}
+```
+
+##### exists查询/missing查询
+
+* exists查询: is not null
+* missing查询: is null
+
 ##### bool查询
+
+> 组合查询
+
+* must: 符合查询条件，计算_score
+* filter: 符合查询条件，计算_score，`filter查询`
+* must_not: 不符合查询条件
+* should: 至少符合一个查询条件
+
+##### filter查询和query查询
+
+* filter查询: 不计算_score，结果被缓存
+* query查询: 计算_score，结果不被缓存
+
+> 全文搜索和相关性得分搜索使用`query查询`，其它情况使用`filter查询`
+
+#### 排序
+
+##### 相关性排序
+
+> 默认情况下，返回的文档按照相关性得分_score进行排序
+
+##### 字段排序
+
+> 自定义字段排序
+
+```js
+{
+    "query": {
+        // ...
+    },
+    "sort": {
+        "date": {
+            "order": "desc"
+        }
+    }
+}
+```
+
+##### 多级排序
+
+```js
+{
+    "sort": {
+        "date": { "order": "desc" },
+        "time": { "order": "desc" }
+    }
+}
+```
+
+##### 数组字段的排序
+
+#### 相关性
+
+##### 相似度算法
+
+#### Doc Values
 
 
 [<< 上一篇: ElasticSearch](11-中间件/ElasticSearch.md)
