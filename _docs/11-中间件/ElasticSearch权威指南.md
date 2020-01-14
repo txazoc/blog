@@ -521,3 +521,172 @@ GET /test/test
 ##### 相似度算法
 
 #### Doc Values
+
+> ElasticSearch中，Doc Values是一种`列式存储`结构
+
+#### 分布式搜索
+
+```js
+{
+    "from": 90,
+    "size": 10
+}
+```
+
+##### query-查询阶段
+
+* 协调节点: 创建一个大小为`from + size`的优先队列
+* 协调节点: 广播查询请求到所有分片(主分片或副本分片)
+* 分片节点: 每个分片处理请求，返回`from + size`的排序队列，结果集仅包含文档ID和排序值
+* 协调节点: 将所有分片返回的结果合并到`from + size`的优先队列，选取`[from, from + size)`的文档ID列表
+
+##### fetch-取数据阶段
+
+* 协调节点: `[from, from + size)`的文档ID列表分片路由后进行分组发送请求
+* 分片节点: 根据文档ID加载文档的_source字段返回
+* 协调节点: 组装分组分片返回的结果，返回给客户端
+
+#### scroll查询
+
+```js
+GET /test/test/_search?scroll=10m
+{
+    "query": {
+        "match_all": {}
+    },
+    "sort": "_doc",
+    "size": 100
+}
+```
+
+```js
+GET /_search/scroll
+{
+    "scroll": "1m",
+    "scroll_id": "DnF1ZXJ5VGhlbkZldGNoBQAAAAAAAAl9FkhyRjV5RVMwUjlHbjZmeVZJS1pmaUEAAAAAAAAJfhZIckY1eUVTMFI5R242ZnlWSUtaZmlBAAAAAAAACXwWSHJGNXlFUzBSOUduNmZ5VklLWmZpQQAAAAAAAAl_FkhyRjV5RVMwUjlHbjZmeVZJS1pmaUEAAAAAAAAJgBZIckY1eUVTMFI5R242ZnlWSUtaZmlB"
+}
+```
+
+#### 索引
+
+##### 索引配置
+
+* number_of_shards: 索引配置
+* number_of_replicas: 备份配置
+
+```js
+PUT /app
+{
+    "settings": {
+        "number_of_shards": 3,
+        "number_of_replicas": 2
+    }
+}
+```
+
+##### 自定义分析器
+
+```js
+PUT /app
+{
+    "settings": {
+        "analysis": {
+            "char_filter": {
+                "my_mapping": {
+                    "type": "mapping",
+                    "mappings": [ "dog => cat" ]
+                }
+            },
+            "tokenizer": {
+                "my_tokenizer": {
+                    "type": "standard",
+                    "max_token_length": 10
+                }
+            },
+            "filter": {
+                "my_stop": {
+                    "type": "stop",
+                    "stopwords": [ "this", "is", "a" ]
+                }
+            },
+            "analyzer": {
+                "my_analyzer": {
+                    "type": "custom",
+                    "char_filter": [ "html_strip", "my_mapping" ],
+                    "tokenizer": "my_tokenizer",
+                    "filter": [ "lowercase", "my_stop" ]
+                }
+            }
+        }
+    }
+}
+```
+
+**使用自定义分析器进行分词:**
+
+```js
+GET /app/_analyze
+{
+    "analyzer": "my_analyzer",
+    "text": "<p>This is a dog</p>"
+}
+```
+
+```js
+{
+    "tokens": [
+        {
+            "token": "cat",
+            "start_offset": 13,
+            "end_offset": 16,
+            "type": "<ALPHANUM>",
+            "position": 3
+        }
+    ]
+}
+```
+
+**应用自定义分词器:**
+
+```js
+PUT /app/_mappings/app
+{
+    "properties": {
+        "description": {
+            "type": "text",
+            "analyzer": "my_analyzer"
+        }
+    }
+}
+```
+
+#### _source字段
+
+> source字段代表文档的JSON字符串
+
+**禁用_source字段:**
+
+```js
+PUT /app
+{
+    "mappings": {
+        "app": {
+            "_source": {
+                "enabled": false
+            }
+        }
+    }
+}
+```
+
+**获取指定字段:**
+
+```js
+GET /app/_search
+{
+    "query": {
+        "match_all": {}
+    },
+    "_source": [ "name", "type", "price" ]
+}
+```
