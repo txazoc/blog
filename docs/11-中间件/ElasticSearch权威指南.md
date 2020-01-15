@@ -691,6 +691,53 @@ GET /app/_search
 }
 ```
 
+#### 分片内部原理
+
+##### 索引不变性
+
+> 倒排索引被写入磁盘后是`不可改变`的，永远不会被修改
+
+##### 索引更新
+
+* 一个`ElasticSearch索引`包含多个`分片`
+* 一个`分片`就是一个`Lucene索引`
+* 一个`Lucene索引`包含一个`提交点(Commit Point)`多个`段(Segment)`
+* 一个`提交点`记录所有已提交的段，包含一个`.del文件`
+* 一个`段`包含多个字段的`倒排索引`，可以被搜索
+* `.del文件`记录被删除文档的段信息
+
+##### refresh
+
+> 写入和打开一个新段的过程叫做`refresh`，默认情况下每个分片每秒自动`refresh`一次，`refresh`后文档就变为可见，所以Elasticsearch是`近实时搜索`
+
+**refresh流程:**
+
+* `in-memory buffer`中的文档写入一个新的`Segment(os buffer)`
+* 新的`Segment(os buffer)`被打开，可以被搜索
+* 清空`in-memory buffer`
+
+通过`refresh_interval`来控制`refresh`的频率
+
+**关闭`refresh`:**
+
+```js
+PUT /app/_settings
+{
+    "refresh_interval": "-1"
+}
+```
+
+**每10s`refresh`一次:**
+
+```js
+PUT /app/_settings
+{
+    "refresh_interval": "10s"
+}
+```
+
+##### flush
+
 
 [<< 上一篇: ElasticSearch](11-中间件/ElasticSearch.md)
 
