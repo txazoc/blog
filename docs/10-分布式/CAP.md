@@ -16,11 +16,11 @@
 
 ### 可用性
 
-> Availability，可对外提供服务
+> Availability，可对外提供服务，提供较快的响应
 
 ### 分区容错性
 
-> Partition Tolerance
+> Partition Tolerance，系统发生分区后，可以继续提供服务
 
 `分区`: 整个网络分为几块区域，相互之间不连通，包括节点宕机和网络异常
 
