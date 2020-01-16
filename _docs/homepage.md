@@ -1,6 +1,5 @@
 #### 1. 数据结构与算法
 
-* [a](1-数据结构与算法/a.md)
 * [LeetCode](1-数据结构与算法/LeetCode.md)
 * [LRU缓存机制](1-数据结构与算法/LRU缓存机制.md)
 * [三数之和](1-数据结构与算法/三数之和.md)
@@ -117,10 +116,12 @@
 
 * [ElasticSearch](11-中间件/ElasticSearch.md)
 * [ElasticSearch权威指南](11-中间件/ElasticSearch权威指南.md)
+* [Kafka](11-中间件/Kafka.md)
 * [LVS](11-中间件/LVS.md)
 * [Nginx](11-中间件/Nginx.md)
 * [Redis](11-中间件/Redis.md)
 * [Tomcat](11-中间件/Tomcat.md)
+* [中间件对比](11-中间件/中间件对比.md)
 * [消息队列](11-中间件/消息队列.md)
 
 #### 12. 架构
