@@ -116,6 +116,7 @@
 
 * [ElasticSearch](11-中间件/ElasticSearch.md)
 * [ElasticSearch权威指南](11-中间件/ElasticSearch权威指南.md)
+* [Kafka](11-中间件/Kafka.md)
 * [LVS](11-中间件/LVS.md)
 * [Nginx](11-中间件/Nginx.md)
 * [Redis](11-中间件/Redis.md)
