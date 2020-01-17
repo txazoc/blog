@@ -1,5 +1,7 @@
 ### Kafka
 
+参考资料: https://juejin.im/post/5de36418e51d4532e871ada3
+
 #### Kafka概念
 
 * `Broker`: Kafka实例节点
@@ -129,6 +131,54 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 #### Zookeeper
 
 #### Producer
+
+##### KafkaProducer初始化
+
+* 解析Kafka生产者配置(`ProducerConfig`)
+* 创建消息缓冲区(`RecordAccumulator`)
+* 创建元数据(`Metadata`)
+    * `bootstrap.servers`: Broker节点列表，提供建立到Kafka集群的初始连接
+* 创建并启动消息发送线程(`Sender`)
+
+##### 生产者发送消息
+
+* 发送消息: `KafkaProducer.send()`
+* 消息拦截器链(`ProducerInterceptors`)
+    * `ProducerInterceptor.onSend()`
+* 元数据(`Metadata`)更新
+    * 无topic分区信息或无效的`partition`，更新元数据
+    * `metadata.max.age.ms`: 元数据强制刷新的间隔数据，默认为`5分钟`
+    * 元数据更新流程
+        * 设置`needUpdate`标识，唤醒`Sender`线程，`Metadata.wait()`等待
+        * `Sender`线程发送请求拉取元数据，更新元数据，`Metadata.notifyAll()`唤醒消息发送线程
+* key/value序列化
+    * `key.serializer`: org.apache.kafka.common.serialization.StringSerializer
+    * `value.serializer`: org.apache.kafka.common.serialization.StringSerializer
+* 分区(`Partitioner`)
+    * 消息已分配了`partition`，使用已分配好的`partition`，否则使用`分区器`选择分区
+    * 分区器`partitioner.class`: 默认分区器`DefaultPartitioner`
+        * key不为null，`partition = hash(key) % 分区数`
+        * key为null，计数器`轮询`负载均衡，优先分配到可用分区
+* 校验消息大小
+    * `消息大小` = 消息头大小 + key大小 + value大小
+    * `消息大小`不可超过`max.request.size`: 单个消息的最大大小，默认为`1M`
+    * `消息大小`不可超过`buffer.memory`: 消息缓冲区(`RecordAccumulator`)的大小，默认为`32M`
+* 绑定消息回调`InterceptorCallback`: `Callback` + `ProducerInterceptors`
+* 消息追加到消息缓冲区(`RecordAccumulator`)
+    * `RecordAccumulator`
+        * `Map<TopicPartition, Deque<ProducerBatch>> batches`: 每个topic的每个分区对应一个`batch`队列
+        * `ProducerBatch`: 一批消息`batch`
+    * 创建`batch`
+        * `batch.size`: 默认为`16k`
+        * 消息大小不超过`batch.size`，`batch`大小为`batch.size`，`batch`中可以追加多条消息
+        * 消息大小超过`batch.size`，`batch`大小为消息大小，一个`batch`中只包含一条消息
+        * `batch`分配`ByteBuffer`
+    * 消息追加到`batch`
+        * 消息追加到`batch`的`ByteBuffer`中
+        * 生成`future`，绑定`future`和回调`InterceptorCallback`
+* 唤醒消息发送线程(`Sender`)
+* 返回future(`FutureRecordMetadata`)
+* 消息发送线程(`Sender`)
 
 #### Consumer
 
