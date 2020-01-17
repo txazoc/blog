@@ -5,6 +5,7 @@
 #### Kafka概念
 
 * `Broker`: Kafka实例节点
+* `Controller`: 控制器，负责监听`Zookeeper`，管理Kafka集群的元数据
 * `Topic`: 消息主题
 * `Partition`: 分区，一个`Topic`有多个分区
 * `Replication`: 副本，一个分区有多个副本
@@ -13,7 +14,6 @@
 * `Producer`: 生产者，发送消息到Kafka
 * `Consumer`: 消费者，消费Kafka中的消息
 * `Consumer Group`: 消费者组，一个消费者组中同一条消息只会被消费一次
-* `Controller`
 
 #### Kafka高性能
 
@@ -148,6 +148,11 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 
 ##### 生产者发送消息
 
+* 构建消息(`ProducerRecord`)
+    * `topic`
+    * `partition`: 分区id
+    * `key`
+    * `value`: 消息内容
 * 发送消息: `KafkaProducer.send()`
 * 消息拦截器链(`ProducerInterceptors`)
     * `ProducerInterceptor.onSend()`
