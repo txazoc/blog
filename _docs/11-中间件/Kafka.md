@@ -6,13 +6,19 @@
 
 * `Broker`: Kafka实例节点
 * `Topic`: 消息主题
-* `Partition`: 分区
-* `Replication`: 副本
+* `Partition`: 分区，一个`Topic`有多个分区
+* `Replication`: 副本，一个分区有多个副本
 * `Offset`: 消息偏移量
 * `Record`: 消息记录
-* `Producer`: 生产者
-* `Consumer`: 消费者
-* `Consumer Group`: 消费者组
+* `Producer`: 生产者，发送消息到Kafka
+* `Consumer`: 消费者，消费Kafka中的消息
+* `Consumer Group`: 消费者组，一个消费者组中同一条消息只会被消费一次
+* `Controller`
+
+#### Kafka高性能
+
+* 磁盘顺序IO: 顺序写、顺序读
+* 零拷贝
 
 #### Kafka集群搭建
 
@@ -92,7 +98,7 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 * `Replicas`: 分区副本节点id列表(包含Leader)
 * `Isr`: 
 * `Leader`
-* `Follower`
+* `Follower`: 同步`Leader`
 
 ```bash
 // Broker 1
@@ -114,7 +120,7 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 
 #### Partition
 
-**分区文件存储:**
+**Partition日志存储:**
 
 ```bash
 > ll /tmp/kafka-logs-1/test-0
