@@ -4,8 +4,10 @@
 
 #### Kafka概念
 
+* `Cluster`: Kafka集群
 * `Broker`: Kafka实例节点
 * `Controller`: 控制器，Kafka集群中的一个`Broker`，负责监听`Zookeeper`，管理Kafka集群的元数据
+* `Coordinator`: 协调器
 * `Topic`: 消息主题
 * `Partition`: 分区，一个`Topic`有多个分区
 * `Replication`: 副本，一个分区有多个副本
@@ -68,16 +70,74 @@ log.dir=/tmp/kafka-logs-3
 > bin/kafka-server-start.sh config/server-3.properties &
 ```
 
+#### Kafka网络模型
+
+> An NIO socket server. The threading model is \
+> `1 Acceptor thread` that handles new connections \
+> Acceptor has `N Processor threads` that each have their own selector and read requests from sockets \
+> `M Handler threads` that handle requests and produce responses back to the processor threads for writing.
+
+`一个Acceptor线程` + `N个Processor线程` + `M个Handler线程`
+
+* `SocketServer`: NIO服务器，基于`Reactor`多线程模型
+    * `Map<EndPoint, Acceptor> acceptors`: 一个`Acceptor线程`
+    * `Map<Int, Processor> processors`: `num.network.threads`个`Processor线程`
+    * `RequestChannel requestChannel`
+* `Acceptor`: `Acceptor`线程，接收新的连接
+    * 注册`OP_ACCEPT`事件
+    * `run()`
+        * `select()`已就绪的事件
+        * `accept`新的连接
+        * 轮询`processors`分配`Processor`
+        * 加入到`Processor`的`newConnections`队列，唤醒`Processor`线程
+* `Processor`: `Processor`线程，处理Socket读写，读`request`，写`response`
+    * `Queue<SocketChannel> newConnections`: 新的连接队列
+    * `Queue<Response> responseQueue`: response队列
+    * `run()`
+        * 从`newConnections`队列中`poll`连接，注册`OP_READ`事件
+        * 从`responseQueue`队列中`poll`响应，设为`KafkaChannel`的`send`，注册`OP_WRITE`事件
+        * `select`已就绪的事件
+            * `isReadable`: 从`channel`中读请求
+            * `isWritable`: 写`KafkaChannel`的`send`到`channel`
+        * 上一步读取的请求，加入到`requestChannel`的`requestQueue`队列
+* `RequestChannel`: 请求通道，缓存待处理的请求
+    * `Queue<Request> requestQueue`: 请求队列，最大大小`queued.max.requests`
+* `KafkaRequestHandlerPool`: Kafka请求处理线程池
+    * `int threadPoolSize`: 线程池大小(`num.io.threads`)
+    * `KafkaRequestHandler[] runnables`
+* `KafkaRequestHandler`: Kafka请求处理线程，处理`request`，生成`response`
+    * 从`requestChannel`的`requestQueue`队列中`poll`请求
+    * 调用`KafkaApis.handle()`处理请求
+* `KafkaApis`: 处理Kafka请求的Api
+    * `handle()`
+        * 根据请求头`request.header.apiKey`分发请求进行处理
+        * 请求处理完成，生成`response`加入到对应`Processor`的`responseQueue`队列，唤醒`Processor`线程
+
 #### Broker
 
-#### Controller
+##### KafkaApis.handleProduceRequest()
+
+* `ISR`大小小于`min.insync.replicas`，抛`NotEnoughReplicasException`
+* `batch`大小大于`max.message.bytes`，抛`RecordTooLargeException`
+* 检查`record`
+* 分配`offset`和`timestamp`
+* 返回当前活跃的`Segment`，`Segment`空间不足，`roll`生成一个新的`Segment`
+* `record`写入`Log`
+* 写入的消息字节数间隔超过`log.index.interval.bytes`，写入`OffsetIndex`和`TimeIndex`
+* 更新`LEO`
+* 未`flush`的消息字节数大于`flush.messages`，flush `Segment`
+* 更新`HW`
+
+#### Controller(控制器)
 
 ```bash
 > get /controller
 {"version":1,"brokerid":1,"timestamp":"1579342747527"}
 ```
 
-#### Topic
+#### Coordinator
+
+#### Topic(主体)
 
 **创建多分区和多副本的Topic:**
 
@@ -101,11 +161,6 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 * `PartitionCount`: 分区数
 * `ReplicationFactor`: 副本数
 * `Partition`: 分区id
-* `Leader`: 分区主节点id
-* `Replicas`: 分区副本节点id列表(包含Leader)
-* `Isr`: 
-* `Leader`: 分区主节点，负责消息读写
-* `Follower`: 同步`Leader`的数据，`Leader`挂掉后选举出新的`Leader`
 
 ```bash
 // Broker 1
@@ -125,7 +180,14 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 /tmp/kafka-logs-3/test-4    Leader
 ```
 
-#### Partition
+#### Partition(分区)
+
+##### Partition概念
+
+* `Segment`:
+* `Log`:
+* `OffsetIndex`:
+* `TimeIndex`:
 
 **Partition日志:**
 
@@ -148,7 +210,24 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
 
 `稀松索引`
 
+#### Replication(副本)
+
+**Replication概念:**
+
+* `Leader`: 分区主节点，负责消息读写
+* `Follower`: 同步`Leader`的数据，`Leader`挂掉后选举出新的`Leader`
+* `AR`:
+* `ISR`: 
+* `OSR`:
+
 #### Offset
+
+**Offset概念:**
+
+* `Offset`
+* `HW`
+* `LEO`
+* `LSO`
 
 `consumer_offset`
 
@@ -255,9 +334,9 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
     * `RecordAccumulator`的`inFlightBatches`中已超时的`batch`
     * `RecordAccumulator`的`batches`中已超时的`batch`，并移除
     * `batch.done()`: `TimeoutException`
-          * `ProducerInterceptors.onAcknowledgement()`
-          * `Callback.onCompletion()`
-          * 唤醒`future`
+        * `ProducerInterceptors.onAcknowledgement()`
+        * `Callback.onCompletion()`
+        * 唤醒`future`
     * 从`inFlightBatches`中清除`batch`
     * 释放`batch`占用内存
 * `sendProduceRequests()`
