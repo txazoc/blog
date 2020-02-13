@@ -36,7 +36,7 @@ public class HashMap {
 * HashMap + 双向链表
 * 插入节点时，节点移动到双向链表尾部，如果removeEldestEntry()返回true，则删除头结点
 * 删除节点时，节点从双向链表中移除
-* accessOrder为true时，`get()`和`非插入put()`都会调用afterNodeAccess将节点移到尾部
+* accessOrder为true时，`get()`和`非插入put()`都会调用afterNodeAccess()将节点移到尾部
 
 ```java
 public class LinkedHashMap extends HashMap {
@@ -110,7 +110,7 @@ public class ConcurrentHashMap<K, V> {
 
 #### TreeMap
 
-* 红黑树
+* 红黑树: 二叉树和完全二叉树的折中
 
 ```java
 public class TreeMap<K, V> {

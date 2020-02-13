@@ -39,8 +39,8 @@ GET /index/type/1
 
 ##### _id
 
-* 自定义_id: `PUT /{index}/{type}/{id}`
-* 自动生成_id: `POST /{index}/{type}`，自动生成的_id为`20位`的GUID字符串
+* 自定义`_id`: `PUT /{index}/{type}/{id}`
+* 自动生成`_id`: `POST /{index}/{type}`，自动生成的`_id`为`20位`的GUID字符串
 
 ##### 版本号_version
 
@@ -469,7 +469,7 @@ GET /test/test
 > 组合查询
 
 * must: 符合查询条件，计算_score
-* filter: 符合查询条件，计算_score，`filter查询`
+* filter: 符合查询条件，不计算_score，`filter查询`
 * must_not: 不符合查询条件
 * should: 至少符合一个查询条件
 

@@ -19,7 +19,7 @@
         * `serviceId`: 服务id路由 `-&gt;` RibbonRoutingFilter
         * `routeHost`: url路由 `-&gt;` SimpleHostRoutingFilter
 * `route filters`
-    * RibbonRoutingFilter: Ribbon `-&gt;` Hystrix `-&gt;` HttpClients转发请求)
+    * RibbonRoutingFilter: Ribbon `-&gt;` Hystrix `-&gt;` HttpClient转发请求
     * SimpleHostRoutingFilter: HttpClient
 * `post filters`
     * SendResponseFilter: 写response

@@ -1,5 +1,12 @@
 ## AQS
 
+AQS核心组件:
+
+* state
+* CLH同步队列
+* acquire()、release()、acquireshared()、releaseshared()
+* LockSupport.park()、LockSupport.unpark()
+
 ### AbstractQueuedSynchronizer
 
 > 提供一个框架用来实现锁和相关的同步器，依赖于FIFO等待队列
@@ -242,5 +249,18 @@ public class CyclicBarrier {
 * lock解锁
 
 ### Condition
+
+* waitStatus = Node.CONDITION
+
+```java
+public class ConditionObject implements Condition {
+
+    // Condition队列的头节点
+    private transient Node firstWaiter;
+    // Condition队列的尾节点
+    private transient Node lastWaiter;
+
+}
+```
 
 ### ReentrantReadWriteLock
