@@ -1,12 +1,12 @@
-## Zookeeper
+### Zookeeper
 
 Zookeeper，是一个高性能的分布式协调服务
 
 #### Zookeeper角色
 
 * Leader
-* Follow
-* Observer: 不参入投票
+* Follow: 参入投票
+* Observer: 不参入投票，扩展系统
 
 #### Zookeeper节点
 
@@ -18,7 +18,7 @@ Zookeeper，是一个高性能的分布式协调服务
 
 #### Zookeeper选举
 
-`epoch` &gt; `xzid` &gt; `sid`
+`epoch(选举周期)` &gt; `zxid(事务id)` &gt; `sid(Server ID)`
 
 #### Zookeeper应用
 

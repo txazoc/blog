@@ -70,7 +70,7 @@ https://www.cnblogs.com/crazymakercircle/p/11674597.html
 
 ### Hystrix
 
-> 断路器，提供资源隔离、熔断、限流、降级的功能
+> 断路器，提供资源隔离、限流、熔断、降级的功能
 
 Request -&gt; `HystrixCommand` -&gt; `请求缓存` -&gt; `熔断开关` -&gt; `线程池/信号量` -&gt; Remote Call
 
