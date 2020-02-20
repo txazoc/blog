@@ -255,9 +255,9 @@ Topic:test	PartitionCount:5	ReplicationFactor:2	Configs:
     * `RecordAccumulator`的`inFlightBatches`中已超时的`batch`
     * `RecordAccumulator`的`batches`中已超时的`batch`，并移除
     * `batch.done()`: `TimeoutException`
-          * `ProducerInterceptors.onAcknowledgement()`
-          * `Callback.onCompletion()`
-          * 唤醒`future`
+        * `ProducerInterceptors.onAcknowledgement()`
+        * `Callback.onCompletion()`
+        * 唤醒`future`
     * 从`inFlightBatches`中清除`batch`
     * 释放`batch`占用内存
 * `sendProduceRequests()`
