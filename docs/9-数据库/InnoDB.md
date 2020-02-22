@@ -817,14 +817,24 @@ commit;
 ```console
 1. 开始事务，分配事务id，获取锁，没有获取到锁则等待
 
-在主键索引上查找userId = 1000对应数据页的页号，根据页号判断对应数据页是否在缓冲池中，如果缓冲池中已存在则直接取出，否则从磁盘加载数据页到缓冲池中
+2. 在主键索引上查找userId = 1000对应数据页的页号，根据页号判断对应数据页是否在缓冲池中，如果缓冲池中已存在则直接取出，否则从磁盘加载数据页到缓冲池中
+3. 在数据页中查找到userId = 1000的行记录，读取
+4. 将amount加50，生成undo log写入Rollback Segment
+5. 修改行记录的amount、trx_id、roll_pointer，更新Buffer Pool
+6. 生成redo log写入redo log buffer
 
-修改Buffer Pool，在数据页中查找到userId = 1000的行记录，读取，将amount加50，写入内存的数据页中
+7. 在主键索引上查找userId = 2000对应数据页的页号，根据页号判断对应数据页是否在缓冲池中，如果缓冲池中已存在则直接取出，否则从磁盘加载数据页到缓冲池中
+8. 在数据页中查找到userId = 2000的行记录，读取
+9. 将amount减50，生成undo log写入Rollback Segment
+10. 修改行记录的amount、trx_id、roll_pointer，更新Buffer Pool
+11. 生成redo log写入redo log buffer
 
-生成undo log，
+// commit
+12. redo log写入磁盘
+13. 提交事务，释放锁
+14. 记录binlog(存储引擎上层)
 
-8. redo log写入磁盘
-9. 提交事务，释放锁
+// rollback
 ```
 
 #### 二级索引下主键是否有序
