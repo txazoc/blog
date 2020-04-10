@@ -10,7 +10,7 @@ sourceDir = os.getcwd() + '/_docs'
 destDir = os.getcwd() + '/docs'
 encoding = sys.getfilesystemencoding()
 regex_image = '!\[(.*)\]\((.*)\)\((.*)\)'
-muduleNum = 15
+muduleNum = 14
 
 class Module:
     def __init__(self, srcPath, destPath, fileName, moduleName):
