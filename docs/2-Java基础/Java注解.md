@@ -175,7 +175,7 @@ public final class com.sun.proxy.$Proxy1 extends java.lang.reflect.Proxy impleme
 }
 ```
 
-#### 注解方法默认值
+***注解方法默认值***
 
 在class文件中，注解方法默认值被添加到方法的`AnnotationDefault`属性
 
@@ -419,6 +419,6 @@ public class AnnotationParser {
 ```
 
 
-[<< 上一篇: Java基础](2-Java基础/Java基础.md)
+[<< 上一篇: Java引用](2-Java基础/Java引用.md)
 
 [>> 下一篇: Java语法糖](2-Java基础/Java语法糖.md)
