@@ -1,6 +1,6 @@
 ### Spring-Cloud-Hystrix
 
 
-[<< 上一篇: Spring-Cloud-Feign](10-分布式/Spring-Cloud-Feign.md)
+[<< 上一篇: MySQL](9-数据库/MySQL.md)
 
-[>> 下一篇: Spring-Cloud-Ribbon](10-分布式/Spring-Cloud-Ribbon.md)
+[>> 下一篇: 分布式调度](10-分布式/分布式调度.md)

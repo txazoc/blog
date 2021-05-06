@@ -111,6 +111,6 @@ public final int getAndAddInt(Object o, long offset, int delta) {
 #### LongAdder
 
 
-[<< 上一篇: AQS](4-多线程与并发/AQS.md)
+[<< 上一篇: 线程池](4-多线程与并发/线程池.md)
 
-[>> 下一篇: CompletableFuture](4-多线程与并发/CompletableFuture.md)
+[>> 下一篇: synchronized](4-多线程与并发/synchronized.md)

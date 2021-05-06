@@ -22,6 +22,6 @@
 * 线程堆栈中查找线程id -&gt; 目标线程
 
 
-[<< 上一篇: JVM排错](6-JVM/JVM排错.md)
+[<< 上一篇: JVM](6-JVM/JVM.md)
 
-[>> 下一篇: JVM监控工具](6-JVM/JVM监控工具.md)
+[>> 下一篇: GC](6-JVM/GC.md)

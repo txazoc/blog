@@ -5,6 +5,6 @@ EurekaInstanceConfigBean
 https://github.com/Netflix/eureka/wiki/Eureka-REST-operations
 
 
-[<< 上一篇: RPC](10-分布式/RPC.md)
+[<< 上一篇: 分布式调度](10-分布式/分布式调度.md)
 
-[>> 下一篇: Spring-Cloud-Feign](10-分布式/Spring-Cloud-Feign.md)
+[>> 下一篇: Dubbo](10-分布式/Dubbo.md)

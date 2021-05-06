@@ -38,6 +38,6 @@ class ApplicationShutdownHooks {
 ```
 
 
-[<< 上一篇: NIO](2-Java基础/NIO.md)
+[<< 上一篇: Java语法糖](2-Java基础/Java语法糖.md)
 
-[>> 下一篇: SPI机制](2-Java基础/SPI机制.md)
+[>> 下一篇: Java基础](2-Java基础/Java基础.md)

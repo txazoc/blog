@@ -77,6 +77,6 @@ CAS自旋
 * notifyAll: 唤醒`_WaitSet队列`中所有线程，，加入`_EntryList队列`，重新竞争锁
 
 
-[<< 上一篇: Java内存模型](4-多线程与并发/Java内存模型.md)
+[<< 上一篇: CAS](4-多线程与并发/CAS.md)
 
-[>> 下一篇: volatile](4-多线程与并发/volatile.md)
+[>> 下一篇: 乐观锁vs悲观锁](4-多线程与并发/乐观锁vs悲观锁.md)

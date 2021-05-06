@@ -1,6 +1,6 @@
 ### Spring-Cloud-Ribbon
 
 
-[<< 上一篇: Spring-Cloud-Hystrix](10-分布式/Spring-Cloud-Hystrix.md)
+[<< 上一篇: 配置中心](10-分布式/配置中心.md)
 
-[>> 下一篇: Spring-Cloud-Zuul](10-分布式/Spring-Cloud-Zuul.md)
+[>> 下一篇: 分布式Session](10-分布式/分布式Session.md)

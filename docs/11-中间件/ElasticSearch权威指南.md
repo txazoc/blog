@@ -739,6 +739,6 @@ PUT /app/_settings
 ##### flush
 
 
-[<< 上一篇: ElasticSearch](11-中间件/ElasticSearch.md)
+[<< 上一篇: Nginx](11-中间件/Nginx.md)
 
-[>> 下一篇: Kafka](11-中间件/Kafka.md)
+[>> 下一篇: 消息队列](11-中间件/消息队列.md)

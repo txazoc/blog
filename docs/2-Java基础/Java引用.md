@@ -22,6 +22,6 @@
 * Finalizer
 
 
-[<< 上一篇: Java基础](2-Java基础/Java基础.md)
+[<< 上一篇: SPI机制](2-Java基础/SPI机制.md)
 
-[>> 下一篇: Java注解](2-Java基础/Java注解.md)
+[>> 下一篇: Java-8](2-Java基础/Java-8.md)

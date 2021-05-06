@@ -502,6 +502,6 @@ Kafka项目导入到IDEA中
 运行`kafka.Kafka`
 
 
-[<< 上一篇: ElasticSearch权威指南](11-中间件/ElasticSearch权威指南.md)
+[<< 上一篇: 监控中心](10-分布式/监控中心.md)
 
-[>> 下一篇: LVS](11-中间件/LVS.md)
+[>> 下一篇: Redis](11-中间件/Redis.md)

@@ -103,6 +103,6 @@ InnoDB的两种一致性读:
     * `select ... for update`
 
 
-[<< 上一篇: MySQL](9-数据库/MySQL.md)
+[<< 上一篇: TCP](8-网络通信/TCP.md)
 
 [>> 下一篇: 分库分表](9-数据库/分库分表.md)

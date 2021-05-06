@@ -349,6 +349,6 @@ table_myisam.MYI        // MyISAM索引文件
 查询时，数据库不知道`offset`的位置在哪，只能从头开始遍历计数，直到`offset`的位置，`offset`太大时，会导致跨越多个分页和无效的遍历
 
 
-[<< 上一篇: InnoDB](9-数据库/InnoDB.md)
+[<< 上一篇: 读写分离](9-数据库/读写分离.md)
 
-[>> 下一篇: MySQL锁](9-数据库/MySQL锁.md)
+[>> 下一篇: Spring-Cloud-Hystrix](10-分布式/Spring-Cloud-Hystrix.md)

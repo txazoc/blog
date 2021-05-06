@@ -66,6 +66,6 @@ ZuulProxyAutoConfiguration
 * zuul.ribbon.eager-load.enabled = true，开启Ribbon的饥饿加载模式
 
 
-[<< 上一篇: Spring-Cloud-Ribbon](10-分布式/Spring-Cloud-Ribbon.md)
+[<< 上一篇: 分布式ID](10-分布式/分布式ID.md)
 
-[>> 下一篇: Spring-Cloud](10-分布式/Spring-Cloud.md)
+[>> 下一篇: Spring-Cloud-Feign](10-分布式/Spring-Cloud-Feign.md)

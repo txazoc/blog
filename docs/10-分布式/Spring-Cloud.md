@@ -135,6 +135,6 @@ HystrixCircuitBreaker.allowRequest():
 * `fallback`
 
 
-[<< 上一篇: Spring-Cloud-Zuul](10-分布式/Spring-Cloud-Zuul.md)
+[<< 上一篇: 分布式Session](10-分布式/分布式Session.md)
 
-[>> 下一篇: Zookeeper](10-分布式/Zookeeper.md)
+[>> 下一篇: 分布式ID](10-分布式/分布式ID.md)

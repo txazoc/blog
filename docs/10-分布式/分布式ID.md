@@ -71,6 +71,6 @@ commit;
 > `时间戳`、`机房id`、`机器id`、`自增id`、`业务id`组合
 
 
-[<< 上一篇: Zookeeper](10-分布式/Zookeeper.md)
+[<< 上一篇: Spring-Cloud](10-分布式/Spring-Cloud.md)
 
-[>> 下一篇: 分布式Session](10-分布式/分布式Session.md)
+[>> 下一篇: Spring-Cloud-Zuul](10-分布式/Spring-Cloud-Zuul.md)

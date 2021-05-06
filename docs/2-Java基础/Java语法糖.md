@@ -11,6 +11,6 @@
 > 包装类型转换为基本数据类型
 
 
-[<< 上一篇: Java注解](2-Java基础/Java注解.md)
+[<< 上一篇: Timer定时任务](2-Java基础/Timer定时任务.md)
 
-[>> 下一篇: Lambda](2-Java基础/Lambda.md)
+[>> 下一篇: ShutdownHook](2-Java基础/ShutdownHook.md)

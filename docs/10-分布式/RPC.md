@@ -20,6 +20,6 @@
 * 反射
 
 
-[<< 上一篇: Dubbo](10-分布式/Dubbo.md)
+[<< 上一篇: 灰度发布](10-分布式/灰度发布.md)
 
-[>> 下一篇: Spring-Cloud-Eureka](10-分布式/Spring-Cloud-Eureka.md)
+[>> 下一篇: 注册中心](10-分布式/注册中心.md)

@@ -69,6 +69,6 @@ Address Resolution Protocol (reply)
 ```
 
 
-[<< 上一篇: Spring](7-开源框架/Spring.md)
+[<< 上一篇: Spring-MVC](7-开源框架/Spring-MVC.md)
 
 [>> 下一篇: HTTP](8-网络通信/HTTP.md)

@@ -87,6 +87,6 @@ typedef struct dictEntry {
 * 不支持mget不同的node，解决方案{prefix}.suffix
 
 
-[<< 上一篇: Nginx](11-中间件/Nginx.md)
+[<< 上一篇: Kafka](11-中间件/Kafka.md)
 
-[>> 下一篇: Tomcat](11-中间件/Tomcat.md)
+[>> 下一篇: Nginx](11-中间件/Nginx.md)

@@ -11,6 +11,6 @@
 * Cookie + Redis
 
 
-[<< 上一篇: 分布式ID](10-分布式/分布式ID.md)
+[<< 上一篇: Spring-Cloud-Ribbon](10-分布式/Spring-Cloud-Ribbon.md)
 
-[>> 下一篇: 分布式事务](10-分布式/分布式事务.md)
+[>> 下一篇: Spring-Cloud](10-分布式/Spring-Cloud.md)

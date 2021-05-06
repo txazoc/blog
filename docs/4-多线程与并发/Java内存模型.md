@@ -80,6 +80,6 @@ volatile重排序规则:
 * volatile读和普通读/写不能重排序
 
 
-[<< 上一篇: final](4-多线程与并发/final.md)
+[<< 上一篇: 优先级队列](3-Java集合/优先级队列.md)
 
-[>> 下一篇: synchronized](4-多线程与并发/synchronized.md)
+[>> 下一篇: 线程池](4-多线程与并发/线程池.md)

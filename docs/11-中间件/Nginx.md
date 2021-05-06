@@ -84,6 +84,6 @@ http {
 ```
 
 
-[<< 上一篇: LVS](11-中间件/LVS.md)
+[<< 上一篇: Redis](11-中间件/Redis.md)
 
-[>> 下一篇: Redis](11-中间件/Redis.md)
+[>> 下一篇: ElasticSearch权威指南](11-中间件/ElasticSearch权威指南.md)

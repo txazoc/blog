@@ -222,6 +222,6 @@ private static class Entry<K, V> extends WeakReference<Object> implements Map.En
 * 下一次gc，value如果不被其它对象引用，就会被回收
 
 
-[<< 上一篇: List](3-Java集合/List.md)
+[<< 上一篇: 动态代理](2-Java基础/动态代理.md)
 
-[>> 下一篇: Queue](3-Java集合/Queue.md)
+[>> 下一篇: Set](3-Java集合/Set.md)

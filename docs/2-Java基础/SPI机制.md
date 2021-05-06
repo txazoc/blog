@@ -68,6 +68,6 @@ public static void main(String[] args) {
     * 实例化服务接口实现类并尝试转型为服务接口
 
 
-[<< 上一篇: ShutdownHook](2-Java基础/ShutdownHook.md)
+[<< 上一篇: 排序算法](1-数据结构与算法/排序算法.md)
 
-[>> 下一篇: Timer定时任务](2-Java基础/Timer定时任务.md)
+[>> 下一篇: Java引用](2-Java基础/Java引用.md)
